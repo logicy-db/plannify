@@ -1,0 +1,37 @@
+.login-page,
+.registration-page {
+    background: fade(@c-light-blue, 10%);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, serif;
+
+    .body {
+        .text {
+            margin: 0;
+        }
+        .wrapper {
+            padding: 20px;
+            text-align: center;
+            background: fade(@c-light-blue, 20%);
+            border-radius: 30px;
+            border: 3px solid fade(@c-light-blue, 70%);
+        }
+
+        .header {
+            margin: 0 0 10px;
+            text-align: center;
+            font-size: 45px;
+            color: @c-blue;
+        }
+
+        .form {
+            margin-top: 10px;
+
+            label {
+                display: none;
+            }
+        }
+    }
+}

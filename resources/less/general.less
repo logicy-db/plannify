@@ -2,6 +2,21 @@ a {
     text-decoration: none;
 }
 
+button {
+    font-size: 17px;
+    border-radius: 25px;
+    outline: none;
+    border: 2px solid fade(@c-blue, 80%);
+    display: block;
+    background-color: @c-white;
+    font-weight: 600;
+
+    &:hover {
+        background-color: fade(@c-blue, 80%);
+        color: @c-white;
+    }
+}
+
 body {
     font-family: Arial, serif;
     background: fade(@c-light-blue, 10%);
@@ -14,15 +29,25 @@ body {
             position: relative;
             width: 100%;
 
+            .logo {
+                width: auto;
+                height: 40px;
+                line-height: 40px;
+                font-size: 27px;
+            }
+
             a {
                 display: block;
+                width: 130px;
                 background-color: @c-darker-blue;
                 color: @c-white;
                 padding: 5px;
-                height: 40px;
-                line-height: 40px;
+                height: 25px;
+                line-height: 25px;
                 text-align: center;
                 font-size: 20px;
+                margin: 5px;
+                border: solid 3px fade(@c-black, 20%);
 
                 &:hover {
                     background-color: @c-light-blue;
@@ -30,6 +55,18 @@ body {
 
                 &.logout-btn {
                     background-color: @c-indian-red;
+
+                    &:hover {
+                        background-color: @c-tulip;
+                    }
+                }
+
+                &.admin-panel-btn {
+                    background-color: @c-ultramarine-blue;
+
+                    &:hover {
+                        background-color: @c-cornflower-blue;
+                    }
                 }
             }
 
@@ -38,15 +75,101 @@ body {
                 right: 0;
                 top: 0;
                 width: 40px;
+                height: 40px;
+                line-height: 40px;
             }
 
             .nav-content {
                 display: none;
+                position: absolute;
+                right: 0;
 
-                &.shown {
-                    display: block;
-                    transition: width 600ms ease-out, height 600ms ease-out;
+                a {
+                    &:first-child {
+                        margin-top: 0;
+                    }
                 }
+            }
+        }
+    }
+
+    .page-wrapper {
+        width: 95%;
+        margin: 0 auto;
+
+        .md({
+            width: 90%;
+        });
+
+        .alert {
+            padding: 15px;
+            display: none;
+            margin-bottom: 15px;
+
+            &-success {
+                background-color: fade(@c-ming-green, 50%);
+            }
+
+            &-error {
+                background-color: fade(@c-tulip, 50%);
+            }
+        }
+
+        .form {
+            background-color: fade(@c-cornflower-blue, 10%);
+            padding: 20px;
+
+            label {
+                font-size: 20px;
+                display: inline-block;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            input,
+            select {
+                width: 100%;
+                height: 40px;
+                font-size: 20px;
+                padding: 0 20px;
+                border-radius: 20px;
+                box-sizing: border-box;
+                margin-top: 5px;
+                border: 1px solid fade(@c-blue, 80%);
+                background-color: @c-white;
+
+                &:focus {
+                    outline: none;
+                    border-width: 3px;
+                }
+            }
+
+            .select-wrapper {
+                position: relative;
+
+                select {
+                    appearance: none;
+                }
+
+                .fa-caret-down {
+                    position: absolute;
+                    top: 16px;
+                    right: 16px;
+                    font-size: 20px;
+                    color: @c-blue;
+                }
+            }
+
+            button {
+                width: 100px;
+                height: 40px;
+                margin: 15px auto 0;
+            }
+
+            .validation-error {
+                color: @c-indian-red;
+                display: block;
+                text-align: center;
             }
         }
     }

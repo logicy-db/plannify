@@ -13,6 +13,6 @@ class PageController extends Controller
      * Homepage
      */
     public function home() {
-        return view('pages.home');
+        return view('page.home');
     }
 }

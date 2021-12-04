@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,10 +33,33 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Only for logged-in users
     Route::post('/logout', [AuthController::class, 'logoutUser'])->name('logout');
+
+    Route::group([
+        'prefix' => 'admin',
+        'middleware' => 'is.admin',
+        'as' => 'admin.'
+    ], function () {
+        // Admin routes
+        Route::get('dashboard', [AdminController::class, 'dashboardView'])->name('dashboard');
+
+        Route::group([
+            'prefix' => 'user',
+            'as' => 'user.'
+        ], function () {
+            // User related controllers
+            Route::get('list', [AdminController::class, 'userListView'])->name('index');
+            Route::get('view/{id}', [AdminController::class, 'userView'])->name('view');
+            Route::post('delete/{id}', [AdminController::class, 'userDelete'])->name('delete');
+            Route::post('edit/{id}', [AdminController::class, 'updateUser'])->name('edit');
+        });
+    });
 });
 
 // Page routes
 Route::middleware(['auth'])->group(function () {
     // Only for logged-in users
     Route::get('/', [PageController::class, 'home'])->name('home');
+    Route::get('/people', [PageController::class, 'home'])->name('people');
+    Route::get('/projects', [PageController::class, 'home'])->name('projects');
+    Route::get('/events', [PageController::class, 'home'])->name('events');
 });

@@ -19,9 +19,11 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'first_name',
+        'last_name',
+        'role_id',
     ];
 
     /**
@@ -50,5 +52,24 @@ class User extends Authenticatable
      */
     protected $attributes = [
         'active' => 1,
+        'role_id' => Role::WORKER,
     ];
+
+    /**
+     * Get user role.
+     */
+    public function role() {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get user full name.
+     *
+     * @return string
+     */
+    public function getFullname() {
+        return isset($this->middle_name) ?
+            sprintf('%s %s %s', $this->first_name, $this->middle_name, $this->last_name) :
+            sprintf('%s %s', $this->first_name, $this->last_name);
+    }
 }

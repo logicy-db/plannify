@@ -56,16 +56,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Show new user to the website view.
-     *
-     * @return string
-     */
-    public function invitationView()
-    {
-        return view('auth.invitation');
-    }
-
-    /**
      * Process registration request.
      *
      * @param Request $request
@@ -76,14 +66,12 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8|max:20',
             'firstname' => 'required',
-            'middlename' => 'nullable',
             'lastname' => 'required',
         ]);
 
         $user = new User;
         $user->email = $request->email;
         $user->first_name = $request->firstname;
-        $user->middle_name = $request->middlename;
         $user->last_name = $request->lastname;
         $user->password = Hash::make($request->password);
 
@@ -115,22 +103,23 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials, true)){
-            return redirect()->route('home');
+            return redirect()->route('home')->with('success', 'Successful login');
         }
 
-        // Displaying user what fields failed validation.
+        // Displaying user fields that failed validation.
         $user = User::where('email', $request->email)->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 return redirect()->route('home');
+            } else {
+                $error = ['password' => 'Provided password is incorrect.'];
             }
-            return back()->withErrors([
-                'password' => 'The provided password is incorrect.',
-            ]);
+        } else {
+            $error = ['email' => 'Provided email is not present in our records.'];
         }
-        return back()->withErrors([
-            'email' => 'The provided email is not present in our records.',
-        ]);
+
+        return back()->withErrors($error)
+                     ->withInput($request->only('email'));
     }
 
     /**
@@ -164,8 +153,9 @@ class AuthController extends Controller
             $request->only('email')
         );
 
+        // TODO: Rework/add normal error handling accross project
         return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __('ALL GOOD')])
+            ? back()->with(['status' => __($status)])
             : back()->withErrors(['status' => __($status)]);
     }
 

@@ -7,9 +7,9 @@
         @csrf
         <input type="hidden" name="token" value="{{ $token }}">
         <div>
-            <x-auth.field name="email" type="email" placeholder="Email address"/>
-            <x-auth.field name="password" type="password" placeholder="New Password"/>
-            <x-auth.field name="password_confirmation" type="password" placeholder="Confirm new password"/>
+            <x-form.input name="email" type="email" placeholder="Email address"/>
+            <x-form.input name="password" type="password" placeholder="New Password"/>
+            <x-form.input name="password_confirmation" type="password" placeholder="Confirm new password"/>
         </div>
         <div>
             <button type="submit">Reset</button>

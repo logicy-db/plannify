@@ -62,29 +62,21 @@ class AuthController extends Controller
      */
     public function registerUser(Request $request)
     {
+        // TODO: create invitation for the user to register.
         $request->validate([
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8|max:20',
-            'firstname' => 'required',
-            'lastname' => 'required',
         ]);
 
         $user = new User;
         $user->email = $request->email;
-        $user->first_name = $request->firstname;
-        $user->last_name = $request->lastname;
         $user->password = Hash::make($request->password);
 
         $result = $user->save();
 
+        // Log in user after successful registration
         if ($result) {
-            // Log in user after successful registration
-            if (Auth::attempt($request->only('email', 'password'), true)) {
-                return redirect()
-                    ->route('home')
-                    ->with('Welcome! You have been successfully registered!');
-            }
-            return back()->with('fail', 'Authentication after registration failed, please, try to log-in manually.');
+            $this->loginUser($request);
         }
 
         return back()->with('fail', 'Registration failed, please, try again.');

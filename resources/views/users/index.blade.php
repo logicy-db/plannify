@@ -10,7 +10,8 @@
                 <th>Email</th>
                 <th>Full name</th>
                 <th>Role</th>
-                <th>Actions</th>
+                <th>Profile actions</th>
+                <th>User Actions</th>
             </tr>
             @foreach($users as $user)
                 <tr>
@@ -19,9 +20,16 @@
                     <td>{{ $user->getFullname() }}</td>
                     <td>{{ $user->role->name }}</td>
                     <td>
-                        <a class="view-btn" href="{{ route('admin.user.view', $user->id) }}">View/Edit</a>
+                        @if ($user->profile)
+                            <a class="view-btn" href="{{ route('profiles.show', $user->profile) }}">View/Edit</a>
+                        @else
+                            Profile is not configured
+                        @endif
+                    </td>
+                    <td>
+                        <a class="view-btn" href="{{ route('users.show', $user->id) }}">View/Edit</a>
                         {{-- TODO: Figure out how to implement delete --}}
-                        <a class="delete-btn" href="{{ route('admin.user.delete', $user->id) }}">Delete</a>
+                        <a class="delete-btn" href="{{ route('users.destroy', $user->id) }}">Delete</a>
                     </td>
                 </tr>
             @endforeach

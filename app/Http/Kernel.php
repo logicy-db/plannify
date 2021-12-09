@@ -2,8 +2,10 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\HasProfileMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\IsAdminMiddleware;
+use \App\Http\Middleware\Authenticate;
 
 class Kernel extends HttpKernel
 {
@@ -65,5 +67,19 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'is.admin' => IsAdminMiddleware::class,
+        'has.profile' => HasProfileMiddleware::class,
+    ];
+
+    /**
+     * The priority-sorted list of middleware.
+     *
+     * Forces the listed middleware to always be in the given order.
+     *
+     * @var array
+     */
+    protected $middlewarePriority = [
+        Authenticate::class,
+        IsAdminMiddleware::class,
+        HasProfileMiddleware::class,
     ];
 }

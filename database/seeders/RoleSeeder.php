@@ -8,30 +8,17 @@ use Illuminate\Database\Seeder;
 class RoleSeeder extends Seeder
 {
     /**
-     * Predefined user roles with their respective ID.
-     * TODO: might worth moving to the User module
-     *
-     * @var string[]
-     */
-    protected const USER_ROLES = [
-        Role::WORKER => 'Worker',
-        Role::PROJECT_MANAGER => 'Project manager',
-        Role::EVENT_ORGANIZER => 'Event organizer',
-        Role::HUMAN_RESOURCES => 'Human resources',
-        Role::ADMIN => 'Administrator',
-    ];
-
-    /**
      * Run the database seeds.
      *
      * @return void
      */
     public function run()
     {
-        foreach (self::USER_ROLES as $id => $name) {
+        foreach (Role::USER_ROLES as $id => $data) {
             Role::create([
                 'id' => $id,
-                'name' => $name,
+                'name' => $data['name'],
+                'access_level' => $data['access_level'],
             ]);
         }
     }

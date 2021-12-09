@@ -16,16 +16,19 @@
         <a class="logo" href="{{ url('/') }}"><b>Plannify</b></a>
         @auth
             <div class="nav-content">
-                <a href="{{ url('/') }}">People</a>
-                <a href="{{ url('/') }}">Projects</a>
-                <a href="{{ url('/') }}">Events</a>
-                @isAdmin
-                    <a class="admin-panel-btn" href="{{ route('admin.dashboard') }}">Admin panel</a>
-                @endisAdmin
+                @hasProfile
+                    <a href="{{ route('profiles.index') }}">People</a>
+                    <a href="{{ url('/') }}">Projects</a>
+                    <a href="{{ url('/') }}">Events</a>
+                    <a href="{{ route('users.show', Auth::user()) }}">My account</a>
+                    @isAdmin
+                        <a class="admin-panel-btn" href="{{ route('admin.dashboard') }}">Admin panel</a>
+                    @endisAdmin
+                @endhasProfile
                 {{-- TODO: Rework handing of the form by using jQuery --}}
-                <a class="logout-btn" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">Logout</a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST">
                     @csrf
+                    <a class="logout-btn">Logout</a>
                 </form>
             </div>
             <a class="nav-control">
@@ -46,10 +49,17 @@
             {{ session()->get('success') }}
         </div>
     @endif
+    {{--  Page content goes below  --}}
     @yield('content')
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
+        // Submitting of log out form
+        $('#logout-form .logout-btn').click(function (e) {
+            e.preventDefault();
+            $('#logout-form').submit();
+        });
+
         // Hide/expand navigation menu
         let showNav = false;
         let $navContent = $('header nav .nav-content');

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Profile;
 
 class User extends Authenticatable
 {
@@ -24,6 +25,7 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'role_id',
+        'profile_id',
     ];
 
     /**
@@ -50,10 +52,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $attributes = [
-        'active' => 1,
-        'role_id' => Role::WORKER,
-    ];
+    protected $attributes = [];
 
     /**
      * Get user role.
@@ -63,13 +62,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Get profile.
+     */
+    public function profile() {
+        return $this->hasOne(Profile::class);
+    }
+
+    /**
      * Get user full name.
      *
      * @return string
      */
     public function getFullname() {
-        return isset($this->middle_name) ?
-            sprintf('%s %s %s', $this->first_name, $this->middle_name, $this->last_name) :
-            sprintf('%s %s', $this->first_name, $this->last_name);
+        if ($this->profile) {
+            return sprintf('%s %s', $this->profile->first_name, $this->profile->last_name);
+        } else {
+            return 'missing';
+        }
     }
 }

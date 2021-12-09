@@ -4,9 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\Role;
 
-class IsAdminMiddleware
+class HasProfileMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,8 +16,8 @@ class IsAdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check() || auth()->user()->role->access_level < Role::LEVEL_ADMIN) {
-            abort(403);
+        if (!auth()->check() || is_null(auth()->user()->profile)) {
+            return redirect()->route('profiles.create');
         }
 
         return $next($request);

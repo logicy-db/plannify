@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,36 +32,29 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/reset-password/{token}', [AuthController::class, 'resetPasswordView'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'resetUserPassword'])->name('password.update');
 });
+
 Route::middleware(['auth'])->group(function () {
-    // Only for logged-in users
     Route::post('/logout', [AuthController::class, 'logoutUser'])->name('logout');
+    Route::resource('profiles', ProfileController::class)->only(['create', 'store']);
 
-    Route::group([
-        'prefix' => 'admin',
-        'middleware' => 'is.admin',
-        'as' => 'admin.'
-    ], function () {
-        // Admin routes
-        Route::get('dashboard', [AdminController::class, 'dashboardView'])->name('dashboard');
-
+    Route::middleware(['has.profile'])->group(function () {
         Route::group([
-            'prefix' => 'user',
-            'as' => 'user.'
+            'prefix' => 'admin',
+            'middleware' => 'is.admin',
+            'as' => 'admin.'
         ], function () {
-            // User related controllers
-            Route::get('list', [AdminController::class, 'userListView'])->name('index');
-            Route::get('view/{id}', [AdminController::class, 'userView'])->name('view');
-            Route::post('delete/{id}', [AdminController::class, 'userDelete'])->name('delete');
-            Route::post('edit/{id}', [AdminController::class, 'updateUser'])->name('edit');
+            // Admin routes
+            Route::get('/dashboard', [AdminController::class, 'dashboardView'])->name('dashboard');
+            Route::resource('users', UserController::class)->only('index');
         });
-    });
-});
 
-// Page routes
-Route::middleware(['auth'])->group(function () {
-    // Only for logged-in users
-    Route::get('/', [PageController::class, 'home'])->name('home');
-    Route::get('/people', [PageController::class, 'home'])->name('people');
-    Route::get('/projects', [PageController::class, 'home'])->name('projects');
-    Route::get('/events', [PageController::class, 'home'])->name('events');
+        Route::resource('users', UserController::class)->except('index');
+        Route::post('profiles/search', [ProfileController::class, 'search'])->name('profiles.search');
+        Route::resource('profiles', ProfileController::class);
+
+        // Page routes
+        Route::get('/', [PageController::class, 'home'])->name('home');
+        Route::get('/projects', [PageController::class, 'home'])->name('projects');
+        Route::get('/events', [PageController::class, 'home'])->name('events');
+    });
 });

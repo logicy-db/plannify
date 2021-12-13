@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Profile;
 
 class User extends Authenticatable
 {
@@ -69,6 +68,13 @@ class User extends Authenticatable
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function events() {
+        return $this->belongsToMany(Event::class)->withTimestamps();
+    }
+
+    /**
      * Get user full name.
      *
      * @return string
@@ -79,5 +85,12 @@ class User extends Authenticatable
         } else {
             return 'missing';
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSystemAccess() {
+        return in_array($this->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
     }
 }

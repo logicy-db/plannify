@@ -4,7 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\HasProfileMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use App\Http\Middleware\IsAdminMiddleware;
+use App\Http\Middleware\hasSystemAccessMiddleware;
 use \App\Http\Middleware\Authenticate;
 
 class Kernel extends HttpKernel
@@ -66,7 +66,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'is.admin' => IsAdminMiddleware::class,
+        'hasSystemAccess' => hasSystemAccessMiddleware::class,
         'has.profile' => HasProfileMiddleware::class,
     ];
 
@@ -79,7 +79,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewarePriority = [
         Authenticate::class,
-        IsAdminMiddleware::class,
+        hasSystemAccessMiddleware::class,
         HasProfileMiddleware::class,
     ];
 }

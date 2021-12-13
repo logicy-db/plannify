@@ -19,13 +19,12 @@
                 @hasProfile
                     <a href="{{ route('profiles.index') }}">People</a>
                     <a href="{{ url('/') }}">Projects</a>
-                    <a href="{{ url('/') }}">Events</a>
+                    <a href="{{ route('events.index') }}">Events</a>
                     <a href="{{ route('users.show', Auth::user()) }}">My account</a>
-                    @isAdmin
-                        <a class="admin-panel-btn" href="{{ route('admin.dashboard') }}">Admin panel</a>
-                    @endisAdmin
+                    @hasSystemAccess
+                        <a class="system-panel-btn" href="{{ route('system.dashboard') }}">System panel</a>
+                    @endhasSystemAccess
                 @endhasProfile
-                {{-- TODO: Rework handing of the form by using jQuery --}}
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">
                     @csrf
                     <a class="logout-btn">Logout</a>

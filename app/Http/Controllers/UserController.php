@@ -5,9 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        // Mapping of the user policies
+        $this->authorizeResource(User::class, 'user');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -40,19 +51,29 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param $id
+     * @param User $user
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function show($id)
+    public function show(User $user)
     {
-        // Fetching the possible user roles
         $roleOptions = [];
-        foreach (Role::all() as $role) {
-            $roleOptions[$role->id] = $role->name;
+        if (Auth::user()->role_id === Role::ADMIN) {
+            // Fetching all possible user roles
+            foreach (Role::all() as $role) {
+                $roleOptions[$role->id] = $role->name;
+            }
+        } else {
+            // HR can change only roles of QA and PM
+            if (Auth::id() !== $user->id && in_array($user->role_id, [Role::QUALITY_ASSURANCE, Role::PROJECT_MANAGER])) {
+                foreach (Role::whereIn('id', [Role::QUALITY_ASSURANCE, Role::PROJECT_MANAGER])->get() as $role) {
+                    $roleOptions[$role->id] = $role->name;
+                }
+            }
         }
 
         return view(
             'users.show',
-            ['id' => $id, 'user' => User::findOrFail($id), 'roleOptions' => $roleOptions]
+            ['user' => $user, 'roleOptions' => $roleOptions]
         );
     }
 
@@ -74,18 +95,35 @@ class UserController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update($id, Request $request)
+    public function update(Request $request, User $user)
     {
-        // TODO: implement possibility to change password
-        $user = User::findOrFail($id);
+        if (Auth::id() === $user->id) {
+            // If account owner updates the data
+            $request->validate([
+                'email' => sprintf('required|email|unique:users,email,%s', $user->id),
+                'current_password' => 'required|current_password',
+                'new_password' => 'nullable|confirmed|min:8|max:20',
+            ]);
 
-        $request->validate([
-            'email' => sprintf('required|email|unique:users,email,%s', $user->id),
-            'role_id' => 'required|exists:roles,id'
-        ]);
+            if ($request->new_password){
+                $user->password = Hash::make($request->new_password);
+            }
+            $user->email = $request->email;
+        } else {
+            $request->validate([
+                'email' => sprintf('required|email|unique:users,email,%s', $user->id),
+                // HR can change only QA and PM user roles
+                'role_id' => sprintf(
+                    'required|exists:roles,id%s',
+                    Auth::user()->role_id === Role::ADMIN ? '' :
+                        sprintf("|in:%s,%s", Role::QUALITY_ASSURANCE, Role::PROJECT_MANAGER)
+                ),
+            ]);
 
-        $user->email = $request->email;
-        $user->role_id = $request->role_id;
+            $user->email = $request->email;
+            $user->role_id = $request->role_id;
+        }
+
         $user->save();
 
         return back()->with('success', sprintf('User %s was updated', $user->getFullname()));

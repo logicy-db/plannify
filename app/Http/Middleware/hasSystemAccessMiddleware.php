@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Models\Role;
 
-class IsAdminMiddleware
+class hasSystemAccessMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class IsAdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check() || auth()->user()->role->access_level < Role::LEVEL_ADMIN) {
+        if (!auth()->check() || !auth()->user()->hasSystemAccess()) {
             abort(403);
         }
 

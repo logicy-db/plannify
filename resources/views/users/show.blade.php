@@ -12,7 +12,14 @@
         @method('PUT')
         @csrf
         <x-form.input name="email" type="email" placeholder="Email address" :inputValue="$user->email" :readonly="true"/>
-        <x-form.select name="role_id" placeholder="Role" :options="$roleOptions" :selectValue="$user->role_id" :readonly="true"/>
+        @if (Auth::id() === $user->id)
+            <x-form.input name="current_password" type="password" placeholder="Current Password"/>
+            <x-form.input name="new_password" type="password" placeholder="New Password"/>
+            <x-form.input name="new_password_confirmation" type="password" placeholder="Confirm new password"/>
+        @endif
+        @if (sizeof($roleOptions))
+            <x-form.select name="role_id" placeholder="Role" :options="$roleOptions" :selectValue="$user->role_id" :readonly="true"/>
+        @endif
         <button type="submit">Submit</button>
     </form>
     {{--  TODO: user might lack profile  --}}

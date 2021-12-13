@@ -62,6 +62,8 @@ class AuthController extends Controller
      */
     public function registerUser(Request $request)
     {
+        $this->authorize('create', User::class);
+
         // TODO: create invitation for the user to register.
         $request->validate([
             'email' => 'required|email|unique:users',

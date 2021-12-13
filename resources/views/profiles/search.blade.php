@@ -1,7 +1,7 @@
-<div class="profile-cards">
+<div class="profile-cards cards">
     @if(sizeof($profiles))
         @foreach($profiles as $profile)
-            <div class="profile-card">
+            <div class="profile-card card">
                 <img class="avatar" src="{{ $profile->getAvatarUrl() }}" alt="Profile picture">
                 <div class="full-name">{{ $profile->user->getFullname() }}</div>
                 <div class="job-position">{{ $profile->getJobName() }}</div>

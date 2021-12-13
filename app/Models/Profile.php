@@ -9,6 +9,9 @@ class Profile extends Model
 {
     use HasFactory;
 
+    public const DEFAULT_IMAGE = '/avatars/default.png';
+    public const IMAGE_FOLDER = '/avatars';
+
     public function user() {
         return $this->belongsTo(User::class);
     }
@@ -19,9 +22,9 @@ class Profile extends Model
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
      */
     public function getAvatarUrl() {
-        return is_file(url('/avatars/'.$this->avatar)) ?
-            url('/avatars/'.$this->avatar) :
-            url('/avatars/default.jpg');
+        return is_file(public_path(sprintf('%s/%s',self::IMAGE_FOLDER, $this->avatar))) ?
+            url(sprintf('%s/%s',self::IMAGE_FOLDER, $this->avatar)) :
+            url(self::DEFAULT_IMAGE);
     }
 
     /**

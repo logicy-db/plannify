@@ -4,18 +4,12 @@
     <select id="{{ $name }}" name="{{ $name }}">
         {{-- TODO: Refactor --}}
         @foreach($options as $value => $name)
-            @if ($readonly)
-                @if ($value === $selectValue)
-                    <option value="{{ $value }}" selected>{{ $name }}</option>
-                @else
-                    <option value="{{ $value }}" hidden>{{ $name }}</option>
-                @endif
+            {{ $value }}
+            {{ $selectValue }}
+            @if ($value === $selectValue)
+                <option value="{{ $value }}" selected>{{ $name }}</option>
             @else
-                @if ($value === $selectValue)
-                    <option value="{{ $value }}" selected>{{ $name }}</option>
-                @else
-                    <option value="{{ $value }}">{{ $name }}</option>
-                @endif
+                <option value="{{ $value }}" {{ $readonly ? 'hidden' : '' }}>{{ $name }}</option>
             @endif
         @endforeach
     </select>

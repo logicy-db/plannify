@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use Illuminate\Database\Seeder;
+use App\Models\Event;
+use App\Models\ParticipationType;
 
-class RoleSeeder extends Seeder
+class ParticipationTypeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,8 +15,8 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        foreach (Role::USER_ROLES as $id => $name) {
-            Role::create([
+        foreach (Event::PARTICIPATION_TYPES as $id => $name) {
+            ParticipationType::create([
                 'id' => $id,
                 'name' => $name,
             ]);

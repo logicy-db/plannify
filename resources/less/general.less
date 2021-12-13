@@ -68,7 +68,7 @@ body {
                     }
                 }
 
-                &.admin-panel-btn {
+                &.system-panel-btn {
                     background-color: @c-ultramarine-blue;
 
                     &:hover {
@@ -188,30 +188,51 @@ body {
     }
 }
 
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-row-gap: 2em;
+    grid-column-gap: 1em;
+    margin: 0 auto;
+    max-width: 1300px;
+
+    .card {
+        background: fade(@c-blue, 30%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 auto;
+        width: 100%;
+
+        .see-more {
+            width: 100%;
+            height: 30px;
+            border-radius: 0;
+            border: 0;
+            margin-top: auto;
+            padding: 0;
+
+            a {
+                color: inherit;
+                display: block;
+            }
+        }
+    }
+}
+
 .profile-listing-page {
     .search-bar {
         margin-bottom: 15px;
     }
 
     .profile-cards {
-        display: grid;
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        grid-row-gap: 2em;
-        grid-column-gap: 1em;
-        margin: 0 auto;
-        max-width: 1300px;
 
         .avatar {
             width: 130px;
         }
 
         .profile-card {
-            max-width: 250px;
-            background: fade(@c-blue, 30%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
             .full-name {
                 font-size: 20px;
                 width: 100%;
@@ -221,18 +242,6 @@ body {
 
             .job-position {
                 margin: 15px 0;
-            }
-
-            .see-more {
-                width: 100%;
-                height: 30px;
-                border-radius: 0;
-                border: 0;
-                margin-top: auto;
-
-                a {
-                    color: inherit;
-                }
             }
         }
     }
@@ -254,6 +263,23 @@ body {
     .visited-events {
         .title {
             font-size: 19px;
+        }
+    }
+}
+
+.event-listing-page {
+    .event-card {
+        .name {
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .content {
+            padding: 0 5px;
+        }
+
+        .description {
+            margin: 15px 0;
         }
     }
 }

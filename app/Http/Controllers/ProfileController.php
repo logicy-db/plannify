@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Auth;
 class ProfileController extends Controller
 {
     /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        // Mapping of the profile policies
+        $this->authorizeResource(Profile::class, 'profile');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Contracts\View\View
@@ -35,14 +44,6 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
-
-        // TODO: remove access to contoller if user already has a profile (middleware?)
-        if ($user->profile) {
-            return back()->with('error', 'Only one profile can be created per user.');
-        }
-
-        // TODO: make all fields required | validation of image does not work
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -54,10 +55,10 @@ class ProfileController extends Controller
 
         $image = $request->file('avatar');
         $imageName = sprintf('%s_%s.%s', Auth::id(), time(), $image->getClientOriginalExtension());
-        // TODO: make a const path in Profile model
-        // TODO: add a default picture to the public folder
-        $destinationPath = public_path('/avatars');
-        $image->move($destinationPath, $imageName);
+        $image->move(
+            public_path(Profile::IMAGE_FOLDER),
+            $imageName
+        );
 
         $profile = new Profile();
         $profile->first_name = $request->first_name;
@@ -67,7 +68,7 @@ class ProfileController extends Controller
         $profile->job_position = $request->job_position;
         $profile->avatar = $imageName;
 
-        $user->profile()->save($profile);
+        Auth::user()->profile()->save($profile);
 
         return redirect()->route('home');
     }
@@ -108,13 +109,24 @@ class ProfileController extends Controller
             'last_name' => 'required',
             'phone_number' => 'required',
             'address' => 'required',
+            'avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // TODO: add image
         $profile->first_name = $request->first_name;
         $profile->last_name = $request->last_name;
         $profile->phone_number = $request->phone_number;
         $profile->address = $request->address;
+
+        if ($image = $request->file('avatar')) {
+            $imageName = sprintf('%s_%s.%s', Auth::id(), time(), $image->getClientOriginalExtension());
+            $image->move(
+                public_path(Profile::IMAGE_FOLDER),
+                $imageName
+            );
+
+            $profile->avatar = $imageName;
+        }
+
         $profile->save();
 
         return back()->with('success', sprintf('User %s was updated', $profile->user->getFullname()));
@@ -135,6 +147,7 @@ class ProfileController extends Controller
      * Search profiles by specified parameters.
      */
     public function search(Request $request) {
+        // TODO: refactor
         $first_name = $request->first_name;
         $profiles = Profile::where('first_name', 'like', "%$first_name%")
             ->get();

@@ -3,9 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,22 +40,33 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['has.profile'])->group(function () {
         Route::group([
-            'prefix' => 'admin',
-            'middleware' => 'is.admin',
-            'as' => 'admin.'
+            'prefix' => 'system',
+            'middleware' => 'hasSystemAccess',
+            'as' => 'system.'
         ], function () {
             // Admin routes
-            Route::get('/dashboard', [AdminController::class, 'dashboardView'])->name('dashboard');
+            Route::get('/dashboard', [SystemController::class, 'dashboardView'])->name('dashboard');
             Route::resource('users', UserController::class)->only('index');
         });
 
-        Route::resource('users', UserController::class)->except('index');
+        Route::resource('users', UserController::class);
+
         Route::post('profiles/search', [ProfileController::class, 'search'])->name('profiles.search');
         Route::resource('profiles', ProfileController::class);
+
+        Route::post('events/{event}/participate', [EventController::class, 'participate'])
+            ->name('events.participate');
+        Route::post('events/{event}/cancel-participation', [EventController::class, 'cancelParticipation'])
+            ->name('events.cancelParticipation');
+        Route::post('events/{event}/queue', [EventController::class, 'queue'])
+            ->name('events.queue');
+        Route::post('events/{event}/cancel-queue', [EventController::class, 'cancelQueue'])
+            ->name('events.cancelQueue');
+        Route::post('events/search', [EventController::class, 'search'])->name('events.search');
+        Route::resource('events', EventController::class);
 
         // Page routes
         Route::get('/', [PageController::class, 'home'])->name('home');
         Route::get('/projects', [PageController::class, 'home'])->name('projects');
-        Route::get('/events', [PageController::class, 'home'])->name('events');
     });
 });

@@ -15,15 +15,13 @@ class CreateEventsTable extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
+            $table->string('name');
             $table->text('description');
-            $table->text('location');
+            $table->string('location');
             // TODO: think of what to do with status
-            $table->smallInteger('status');
-            $table->date('starting_date');
-            $table->time('starting_time');
-            // TODO: add preview and event images
-            $table->text('image');
+            $table->foreignId('event_status_id')->constrained()->cascadeOnDelete();
+            $table->dateTime('starting_time');
+            $table->string('preview')->default('default.jpg');
             $table->integer('attendees_limit');
             $table->timestamps();
         });

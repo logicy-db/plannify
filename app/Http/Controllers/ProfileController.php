@@ -47,9 +47,8 @@ class ProfileController extends Controller
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
-            'phone_number' => 'required|numeric',
+            'phone_number' => 'required',
             'address' => 'required',
-            'job_position' => 'required',
             'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -65,7 +64,6 @@ class ProfileController extends Controller
         $profile->last_name = $request->last_name;
         $profile->phone_number = $request->phone_number;
         $profile->address = $request->address;
-        $profile->job_position = $request->job_position;
         $profile->avatar = $imageName;
 
         Auth::user()->profile()->save($profile);

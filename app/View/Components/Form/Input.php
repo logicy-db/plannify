@@ -42,16 +42,21 @@ class Input extends Component
     public $additional;
 
     /**
+     * @var string
+     */
+    public $lable;
+
+    /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($name, $type, $placeholder, $inputValue = '', $readonly = false, $additional = '')
+    public function __construct($name, $type, $placeholder, $label = null, $inputValue = null, $readonly = false, $additional = '')
     {
         $this->name = $name;
         $this->type = $type;
         $this->placeholder = $placeholder;
-        $this->label = $placeholder;
+        $this->label = $label ?? $placeholder;
         $this->inputValue = $inputValue;
         $this->readonly = $readonly ? 'readonly' : '';
         $this->additional = $additional;

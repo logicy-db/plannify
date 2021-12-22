@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserInvitation;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Validation\Rule;
 
 /**
  * Handles authorization and authentication
@@ -30,9 +33,13 @@ class AuthController extends Controller
      *
      * @return string
      */
-    public function registrationView()
+    public function registrationView(Request $request)
     {
-        return view('auth.registration');
+        $invitation = UserInvitation::whereInvitationToken(
+            $request->get('invitation_token')
+        )->firstOrFail();
+
+        return view('auth.registration', ['email' => $invitation->email, 'token' => $invitation->invitation_token]);
     }
 
     /**
@@ -64,24 +71,52 @@ class AuthController extends Controller
     {
         $this->authorize('create', User::class);
 
-        // TODO: create invitation for the user to register.
         $request->validate([
-            'email' => 'required|email|unique:users',
+            'invitation_token' => [
+                'required',
+                Rule::exists('user_invitations', 'invitation_token')
+                    ->where('invitation_token', $request->invitation_token),
+            ],
+            'email' => [
+                'required',
+                Rule::exists('user_invitations', 'email')
+                    ->where('invitation_token', $request->invitation_token),
+                'unique:users'
+            ],
             'password' => 'required|confirmed|min:8|max:20',
+        ],
+        [
+            'invitation_token.exists' => 'Invalid invitation token. Please check the URL.',
+            'email.exists' => 'Invitation is bound to the email address to which invitation was send to.',
         ]);
+
+        $invitation = UserInvitation::whereInvitationToken($request->invitation_token)->firstOrFail();
+
+        if ($invitation->status === UserInvitation::ACCEPTED) {
+            return redirect()->back()->with('error', 'Invitation link has already been used.');
+        } elseif ($invitation->status === UserInvitation::EXPIRED) {
+            return redirect()->back()->with('error', 'Invitation link has already expired.');
+        }
+
+        $invitation->status = UserInvitation::ACCEPTED;
+        $invitation->save();
 
         $user = new User;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        $user->role_id = $invitation->role_id;
 
+        $invitation->status = UserInvitation::ACCEPTED;
+        $invitation->save();
         $result = $user->save();
 
         // Log in user after successful registration
         if ($result) {
             $this->loginUser($request);
+            // TODO: end it here
+        } else {
+            return back()->with('fail', 'Registration failed, please, try again.');
         }
-
-        return back()->with('fail', 'Registration failed, please, try again.');
     }
 
     /**

@@ -55,7 +55,8 @@ class EventPolicy
      */
     public function update(User $user, Event $event)
     {
-        //
+        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]) &&
+            !is_null($event);
     }
 
     /**
@@ -67,7 +68,8 @@ class EventPolicy
      */
     public function delete(User $user, Event $event)
     {
-        //
+        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]) &&
+            !is_null($event);
     }
 
     /**
@@ -98,9 +100,30 @@ class EventPolicy
         return !$event->users->contains($user->id) && !$event->isFull();
     }
 
+    /**
+     * User cancels his/her own participation in event.
+     *
+     * @param User $user
+     * @param Event $event
+     * @return bool
+     */
     public function cancelParticipation(User $user, Event $event) {
         // TODO: check time before event starts
         return $event->usersGoing()->contains($user->id);
+    }
+
+    /**
+     * Event organizer, HR or admin cancels other user participation in event.
+     *
+     * @param User $user
+     * @param Event $event
+     * @param User $model
+     * @return bool
+     */
+    public function cancelUserParticipation(User $user, Event $event, User $model) {
+        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]) &&
+            !is_null($event) &&
+            $model->exists;
     }
 
     public function queue(User $user, Event $event) {

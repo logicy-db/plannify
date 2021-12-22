@@ -4,10 +4,10 @@ namespace App\Policies;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserInvitation;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Auth;
 
-class UserPolicy
+class UserInvitationPolicy
 {
     use HandlesAuthorization;
 
@@ -26,13 +26,12 @@ class UserPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\UserInvitation  $userInvitation
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, User $model)
+    public function view(User $user, UserInvitation $userInvitation)
     {
-        return $user->id === $model->id ||
-            in_array($user->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
+        //
     }
 
     /**
@@ -41,35 +40,31 @@ class UserPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(?User $user)
+    public function create(User $user)
     {
-        // TODO: refactor
-        return true;
+        return in_array($user->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\UserInvitation  $userInvitation
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, User $model)
+    public function update(User $user, UserInvitation $userInvitation)
     {
-        return $user->id === $model->id ||
-            $user->role_id === Role::ADMIN ||
-            (in_array($model->role_id, [Role::QUALITY_ASSURANCE, Role::PROJECT_MANAGER]) &&
-                $user->role_id === Role::HUMAN_RESOURCES);
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\UserInvitation  $userInvitation
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, User $model)
+    public function delete(User $user, UserInvitation $userInvitation)
     {
         //
     }
@@ -78,10 +73,10 @@ class UserPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\UserInvitation  $userInvitation
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, User $model)
+    public function restore(User $user, UserInvitation $userInvitation)
     {
         //
     }
@@ -90,10 +85,10 @@ class UserPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\UserInvitation  $userInvitation
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $user, UserInvitation $userInvitation)
     {
         //
     }

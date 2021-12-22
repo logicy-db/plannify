@@ -1,0 +1,29 @@
+.login,
+.registration,
+.forgot-password {
+    &-page {
+        .page-wrapper {
+            max-width: 400px;
+            margin-top: 50px;
+
+            .text {
+                margin: 0;
+                text-align: center;
+            }
+
+            input {
+                text-align: center;
+            }
+        }
+    }
+}
+
+.registration {
+    &-page {
+        .page-wrapper {
+            label[for="invitation_token"] {
+                display: none;
+            }
+        }
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CanRegistrateMiddleware;
 use App\Http\Middleware\HasProfileMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\hasSystemAccessMiddleware;
@@ -67,7 +68,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'hasSystemAccess' => hasSystemAccessMiddleware::class,
-        'has.profile' => HasProfileMiddleware::class,
+        'hasProfile' => HasProfileMiddleware::class,
+        'canRegistrate' => CanRegistrateMiddleware::class,
     ];
 
     /**

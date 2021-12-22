@@ -4,6 +4,7 @@
     <select id="{{ $name }}" name="{{ $name }}">
         {{-- TODO: Refactor --}}
         @foreach($options as $value => $name)
+            {{-- TODO: remove the code below--}}
             {{ $value }}
             {{ $selectValue }}
             @if ($value === $selectValue)

@@ -7,6 +7,7 @@ use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\UserInvitationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,8 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'loginView'])->name('login');
     Route::post('/login', [AuthController::class, 'loginUser']);
     // TODO: modify registration to add invite tokens or e-mail domain check
-    Route::get('/registration', [AuthController::class, 'registrationView'])->name('registration');
+    Route::get('/registration', [AuthController::class, 'registrationView'])->name('registration')
+        ->middleware('canRegistrate');
     Route::post('/registration', [AuthController::class, 'registerUser']);
     Route::get('/forgot-password', [AuthController::class, 'forgotPasswordView'])->name('password.request');
     Route::post('/forgot-password', [AuthController::class, 'sendPasswordResetEmail'])->name('password.email');
@@ -38,25 +40,26 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logoutUser'])->name('logout');
     Route::resource('profiles', ProfileController::class)->only(['create', 'store']);
 
-    Route::middleware(['has.profile'])->group(function () {
+    Route::middleware(['hasProfile'])->group(function () {
         Route::group([
             'prefix' => 'system',
             'middleware' => 'hasSystemAccess',
             'as' => 'system.'
         ], function () {
-            // Admin routes
+            // System routes
             Route::get('/dashboard', [SystemController::class, 'dashboardView'])->name('dashboard');
             Route::resource('users', UserController::class)->only('index');
+            Route::resource('invitations', UserInvitationController::class);
         });
 
         Route::resource('users', UserController::class);
 
         Route::post('profiles/search', [ProfileController::class, 'search'])->name('profiles.search');
-        Route::resource('profiles', ProfileController::class);
+        Route::resource('profiles', ProfileController::class)->except(['create', 'store']);
 
         Route::post('events/{event}/participate', [EventController::class, 'participate'])
             ->name('events.participate');
-        Route::post('events/{event}/cancel-participation', [EventController::class, 'cancelParticipation'])
+        Route::post('events/{event}/cancel-participation/{user?}', [EventController::class, 'cancelParticipation'])
             ->name('events.cancelParticipation');
         Route::post('events/{event}/queue', [EventController::class, 'queue'])
             ->name('events.queue');

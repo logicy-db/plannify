@@ -2,6 +2,20 @@
 @section('title', $event->name)
 @section('bodyClass', 'event-view-page')
 @section('content')
+    <div class="preview-wrapper">
+        <img class="preview" src="{{ url($event->getPreviewUrl()) }}" alt="Profile picture">
+    </div>
+    @can('delete', $event)
+        <form class="form" action="{{ route('events.destroy', $event) }}" method="POST">
+            @method('DELETE')
+            @csrf
+            {{-- TODO: popup might be useful for delete events--}}
+            <button type="submit">Delete event</button>
+        </form>
+    @endcan
+    @can('update', $event)
+        <button type="submit"><a href="{{ route('events.edit', $event) }}">Update event</a></button>
+    @endcan
     <div class="event-card card">
         <div class="name">{{ $event->name }}</div>
         <div class="description">{{ $event->description }}</div>
@@ -16,19 +30,34 @@
                 @else
                     <li>{{ $participant->getFullname() }}</li>
                 @endif
+                {{-- TODO: maybe only check if user has privillages? --}}
+                @can('cancelUserParticipation', [$event, $participant])
+                    <form class="form" action="{{ route('events.cancelParticipation', [$event, $participant->id]) }}" method="POST">
+                        @csrf
+                        {{-- TODO: popup might be useful for delete events--}}
+                        <button type="submit">Cancel user participation</button>
+                    </form>
+                @endcan
             @endforeach
             </ol>
             @if ($event->isFull())
-                <p class="title">Event queue</p>
-                <ol>
-                    @foreach($event->usersQueued() as $queuedUser)
-                        @if ($queuedUser->id === Auth::id())
-                            <li><b>{{ $queuedUser->getFullname() }} (you)</b></li>
-                        @else
-                            <li>{{ $queuedUser->getFullname() }}</li>
-                        @endif
-                    @endforeach
-                </ol>
+                <p class="title">Event queue:</p>
+                @if (sizeof($queuedUsers = $event->usersQueued()))
+                    <ol>
+                        @foreach($queuedUsers as $queuedUser)
+                            @if ($queuedUser->id === Auth::id())
+                            {{-- TODO: apply some css class to mark --}}
+                                <li><b>{{ $queuedUser->getFullname() }} (you)</b></li>
+                            @else
+                                <li>{{ $queuedUser->getFullname() }}</li>
+                            @endif
+                        @endforeach
+                    </ol>
+                @else
+                    No one has queued yet.
+                    <br/>
+                    <br/>
+                @endif
             @endif
         @else
             Be first to sign-up for the event!
@@ -64,4 +93,17 @@
             @endif
         @endif
     </div>
+    @can('create', $event)
+        <br/>
+        <br/>
+        @if (sizeof($canceledUsers = $event->usersCanceled()))
+            <ol>
+                @foreach($canceledUsers as $canceledUser)
+                    <li>{{ $canceledUser->getFullname() }}</li>
+                @endforeach
+            </ol>
+        @else
+            No one has canceled their attendance yet.
+        @endif
+    @endcan
 @endsection

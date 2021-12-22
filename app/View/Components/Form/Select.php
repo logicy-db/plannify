@@ -41,7 +41,7 @@ class Select extends Component
      *
      * @return void
      */
-    public function __construct($name, $placeholder, $selectValue, array $options = [], $readonly = false)
+    public function __construct($name, $placeholder, $selectValue = null, array $options = [], $readonly = false)
     {
         $this->name = $name;
         $this->placeholder = $placeholder;

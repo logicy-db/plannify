@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin Builder
+ */
 class Profile extends Model
 {
     use HasFactory;
 
-    public const DEFAULT_IMAGE = '/avatars/default.png';
-    public const IMAGE_FOLDER = '/avatars';
+    public const DEFAULT_IMAGE = self::IMAGE_FOLDER.'/default.png';
+    public const IMAGE_FOLDER = 'images/avatars';
 
     public function user() {
         return $this->belongsTo(User::class);

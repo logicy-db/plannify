@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @mixin Builder
+ */
 class Event extends Model
 {
     use HasFactory;
 
-    public const DEFAULT_IMAGE = '/event_images/default.png';
-    public const IMAGE_FOLDER = '/event_images';
+    public const IMAGE_FOLDER = 'images/events';
+    public const DEFAULT_IMAGE = self::IMAGE_FOLDER.'/default.png';
 
     public const USER_GOING = 1;
     public const USER_CANCELED = 2;
@@ -49,22 +53,34 @@ class Event extends Model
             ->withPivot(['participation_type_id']);
     }
 
+    public function eventStatus() {
+        return $this->belongsTo(EventStatus::class);
+    }
+
     public function usersCanceled() {
-        // TODO: looks sus, need to apply order by pivot updated_at value
-        return $this->users()->wherePivot('participation_type_id', Event::USER_CANCELED)->orderBy('updated_at')->get();
+        return $this->users()->wherePivot('participation_type_id', Event::USER_CANCELED)
+            ->orderByPivot('updated_at')->get();
     }
 
     public function usersGoing()
     {
-        return $this->users()->wherePivot('participation_type_id', Event::USER_GOING)->orderBy('updated_at')->get();
+        return $this->users()->wherePivot('participation_type_id', Event::USER_GOING)
+            ->orderByPivot('updated_at')->get();
     }
 
     public function usersQueued()
     {
-        return $this->users()->wherePivot('participation_type_id', Event::USER_QUEUED)->orderBy('updated_at')->get();
+        return $this->users()->wherePivot('participation_type_id', Event::USER_QUEUED)
+            ->orderByPivot('updated_at')->get();
     }
 
     public function isFull() {
         return $this->users()->where('participation_type_id', Event::USER_GOING)->count() >= $this->attendees_limit;
+    }
+
+    public function getPreviewUrl() {
+        return is_file(public_path(sprintf('%s/%s',self::IMAGE_FOLDER, $this->preview))) ?
+            url(sprintf('%s/%s',self::IMAGE_FOLDER, $this->preview)) :
+            url(self::DEFAULT_IMAGE);
     }
 }

@@ -1,0 +1,54 @@
+.profile {
+    &-listing-page {
+        .search-bar {
+            margin-bottom: 15px;
+        }
+
+        .profile-cards {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+
+            .avatar {
+                width: 130px;
+            }
+
+            .profile-card {
+                .full-name {
+                    font-size: 20px;
+                    width: 100%;
+                    min-height: 46px;
+                    text-align: center;
+                }
+
+                .job-position {
+                    margin: 15px 0;
+                }
+            }
+        }
+    }
+
+    &-view-page {
+        text-align: center;
+
+        .profile-card {
+            .full-name {
+                font-size: 25px;
+            }
+
+            .job-position {
+                margin-top: 15px;
+            }
+        }
+
+        .visited-events {
+            .title {
+                font-size: 19px;
+            }
+        }
+    }
+
+    &-create-page {
+        h4 {
+            margin-bottom: 0;
+        }
+    }
+}

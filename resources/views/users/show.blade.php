@@ -3,12 +3,13 @@
 @section('bodyClass', 'user-view-page')
 @section('content')
     <div class="top-bar">
-        <h2>User fullname: {{ $user->getFullname() }}</h2>
+        <h2>{{ $user->getFullname() }}</h2>
         {{-- TODO: make editing button per form --}}
-        <button class="edit-form">Enable editing</button>
+        <button class="edit-form">Edit user data</button>
     </div>
+
+    <h2>User data</h2>
     <form class="form view-user" action="{{ route('users.update', $user->id) }}" method="POST">
-        <h2>User data</h2>
         @method('PUT')
         @csrf
         <x-form.input name="email" type="email" placeholder="Email address" :inputValue="$user->email" :readonly="true"/>

@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use App\Models\UserInvitation;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,7 +26,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Expire user invitations if such exist
+        $schedule->call(function () {
+            $expiredInvitations = UserInvitation::where('expires_at', '>', Carbon::now());
+            /** @var UserInvitation $expiredInvitation */
+            foreach($expiredInvitations as $expiredInvitation) {
+                $expiredInvitation->status = UserInvitation::EXPIRED;
+            }
+        })->everyMinute()->when(is_null(UserInvitation::where('expires_at', '>', Carbon::now())->first()));
+
+        // Expire
     }
 
     /**

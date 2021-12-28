@@ -34,8 +34,6 @@ class Kernel extends ConsoleKernel
                 $expiredInvitation->status = UserInvitation::EXPIRED;
             }
         })->everyMinute()->when(is_null(UserInvitation::where('expires_at', '>', Carbon::now())->first()));
-
-        // Expire
     }
 
     /**

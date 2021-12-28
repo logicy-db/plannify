@@ -68,7 +68,7 @@ class UserInvitationController extends Controller
             ]
         ],
         [
-            'email.unique' => 'User is already registered or has a pending invite.'
+            'email.unique' => 'User is already registered or has an invite.'
         ]);
 
         $invitation = new UserInvitation();

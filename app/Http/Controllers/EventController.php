@@ -6,6 +6,7 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use function React\Promise\all;
 
 class EventController extends Controller
 {
@@ -23,7 +24,12 @@ class EventController extends Controller
      */
     public function index()
     {
-        return view('events.index', ['events' => Event::all()]);
+        return view('events.index', [
+            'plannedEvents' => Event::where('starting_time', '>', now())->get()
+                ->sortBy('starting_time'),
+            'pastEvents' => Event::where('starting_time', '<=', now())->get()
+                ->sortByDesc('starting_time'),
+        ]);
     }
 
     /**
@@ -194,6 +200,7 @@ class EventController extends Controller
         $user->pivot->participation_type_id = Event::USER_CANCELED;
         $user->pivot->save();
 
+        // TODO: inform user by email
         // After user cancels their participation, sign in for the event first user from event queue
         if ($queuedUser = $event->usersQueued()->first()) {
             $queuedUser->pivot->participation_type_id = Event::USER_GOING;
@@ -219,11 +226,40 @@ class EventController extends Controller
     /**
      * Signing user in for the event.
      */
-    public function cancelQueue(Event $event) {
-        $this->authorize('cancelQueue', $event);
+    public function cancelQueue(Event $event, User $user = null) {
+        if (is_null($user)) {
+            $this->authorize('cancelQueue', $event);
 
-        $event->users()->detach(Auth::id());
+            $event->users()->detach(Auth::id());
+            $msg = 'You have exited the event queue.';
+        } else {
+            $this->authorize('cancelUserQueue', [$event, $user]);
 
-        return back()->with('success', 'You have exited the event queue.');
+            $event->users()->detach($user->id());
+            $msg = "You have removed {$user->getFullname()} from the event queue.";
+        }
+
+        return back()->with('success', $msg);
+    }
+
+    /**
+     * Allow user to participate when previous participation was canceled.
+     */
+    public function allowParticipation(Event $event, User $user) {
+        $this->authorize('allowParticipation', [$event, $user]);
+        $event->users()->detach($user->id);
+
+        return back()->with('success', "You have allowed {$user->getFullname()} to participate in the event");
+    }
+
+    /*
+     * Search profiles by specified parameters.
+     */
+    public function search(Request $request) {
+        // TODO: refactor
+        $first_name = $request->first_name;
+        $profiles = Profile::where('first_name', 'like', "%$first_name%")
+            ->get();
+        return view('profiles.search', ['profiles' => $profiles]);
     }
 }

@@ -2,27 +2,31 @@
 @section('title', 'User invitations panel')
 @section('bodyClass', 'invitation-listing-page')
 @section('content')
-    <h2 class="text">User invitations</h2>
-    <button>
-        <a href="{{ route('system.invitations.create') }}">Invite new user</a>
-    </button>
-    <h2 class="text">Pending invites</h2>
+    <div class="action-bar">
+        <h2 class="text">User invitations</h2>
+        <button class="create-invite">
+            <a href="{{ route('system.invitations.create') }}">Invite new user</a>
+        </button>
+    </div>
     @isset($invites)
-        <table class="user-table">
-            <tr>
-                <th>ID</th>
-                <th>Email</th>
-                <th>Full name</th>
-                <th>Role</th>
-                <th>Profile actions</th>
-                <th>User Actions</th>
-            </tr>
-            @foreach($invites as $invite)
+        <div class="table-wrapper">
+            {{-- TODO: refactor --}}
+            <table class="invite-list">
                 <tr>
-                    <td>{{ $invite->id }}</td>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Full name</th>
+                    <th>Role</th>
+                    <th>Profile actions</th>
+                    <th>User Actions</th>
                 </tr>
-            @endforeach
-        </table>
+                @foreach($invites as $invite)
+                    <tr>
+                        <td>{{ $invite->id }}</td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
     @endisset
     {{--    <div class="search-bar">--}}
 {{--        @csrf--}}

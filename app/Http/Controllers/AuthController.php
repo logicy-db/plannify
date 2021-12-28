@@ -110,10 +110,9 @@ class AuthController extends Controller
         $invitation->save();
         $result = $user->save();
 
-        // Log in user after successful registration
+        // Redirect user to login page after successful registration
         if ($result) {
-            $this->loginUser($request);
-            // TODO: end it here
+            return redirect()->route('login')->with('success', 'You have successfully registrated.');
         } else {
             return back()->with('fail', 'Registration failed, please, try again.');
         }
@@ -147,7 +146,7 @@ class AuthController extends Controller
             $error = ['email' => 'Provided email is not present in our records.'];
         }
 
-        return back()->withErrors($error)
+        return back()->with('error', $error)
                      ->withInput($request->only('email'));
     }
 

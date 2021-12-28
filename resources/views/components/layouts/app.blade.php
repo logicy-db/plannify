@@ -38,16 +38,18 @@
 </header>
 <div class="page-wrapper">
     {{-- System messages for the users --}}
-    @if (session()->has('error'))
-        <div class="alert alert-error">
-            {{ session()->get('error') }}
-        </div>
-    @endif
-    @if (session()->has('success'))
-        <div class="alert alert-success">
-            {{ session()->get('success') }}
-        </div>
-    @endif
+    <div class="notifications">
+        @if (session()->has('error'))
+            <div class="alert alert-error">
+                {{ session()->get('error') }}
+            </div>
+        @endif
+        @if (session()->has('success'))
+            <div class="alert alert-success">
+                {{ session()->get('success') }}
+            </div>
+        @endif
+    </div>
     {{--  Page content goes below  --}}
     @yield('content')
 </div>
@@ -72,10 +74,17 @@
         })
 
         // Displaying/hiding system messages
-        $('.alert').slideDown('fast', function () {
+        $('.notifications .alert').slideDown('fast', function () {
             setTimeout(() => {
                 $(this).slideUp('fast');
             }, 5000);
+        });
+
+        $('button.danger').on('click', function (e) {
+            // Popup to confirm dangerous actions
+            if (confirm('Are you sure about this action?') === false) {
+                e.preventDefault();
+            }
         });
     });
 </script>

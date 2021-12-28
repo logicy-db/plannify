@@ -18,9 +18,11 @@ class CreateEventsTable extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('location');
+            $table->string('meeting_point');
             // TODO: think of what to do with status
             $table->foreignId('event_status_id')->constrained()->cascadeOnDelete();
             $table->dateTime('starting_time');
+            $table->dateTime('ending_time');
             $table->string('preview')->default('default.jpg');
             $table->integer('attendees_limit');
             $table->timestamps();

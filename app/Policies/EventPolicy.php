@@ -135,4 +135,15 @@ class EventPolicy
     public function cancelQueue(User $user, Event $event) {
         return $event->usersQueued()->contains($user->id);
     }
+
+    public function cancelUserQueue(User $user, Event $event, User $model) {
+        return $event->usersQueued()->contains($model) &&
+            in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]);
+    }
+
+    public function allowParticipation(User $user, Event $event, User $model) {
+        return !is_null($event) &&
+            $event->usersCanceled()->contains($model->id) &&
+            in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]);
+    }
 }

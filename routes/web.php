@@ -57,15 +57,18 @@ Route::middleware(['auth'])->group(function () {
         Route::post('profiles/search', [ProfileController::class, 'search'])->name('profiles.search');
         Route::resource('profiles', ProfileController::class)->except(['create', 'store']);
 
+        // TODO: refactor post to put requests
         Route::post('events/{event}/participate', [EventController::class, 'participate'])
             ->name('events.participate');
-        Route::post('events/{event}/cancel-participation/{user?}', [EventController::class, 'cancelParticipation'])
+        Route::put('events/{event}/cancel-participation/{user?}', [EventController::class, 'cancelParticipation'])
             ->name('events.cancelParticipation');
         Route::post('events/{event}/queue', [EventController::class, 'queue'])
             ->name('events.queue');
-        Route::post('events/{event}/cancel-queue', [EventController::class, 'cancelQueue'])
+        Route::put('events/{event}/cancel-queue/{user?}', [EventController::class, 'cancelQueue'])
             ->name('events.cancelQueue');
         Route::post('events/search', [EventController::class, 'search'])->name('events.search');
+        Route::put('events/{event}/allow-participation/{user}', [EventController::class, 'allowParticipation'])
+            ->name('events.allowParticipation');
         Route::resource('events', EventController::class);
 
         // Page routes

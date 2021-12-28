@@ -51,11 +51,16 @@ class Input extends Component
      *
      * @return void
      */
-    public function __construct($name, $type, $placeholder, $label = null, $inputValue = null, $readonly = false, $additional = '')
+    public function __construct($name, $type, $placeholder = null, $label = null, $inputValue = null, $readonly = false, $additional = '')
     {
         $this->name = $name;
         $this->type = $type;
-        $this->placeholder = $placeholder;
+        // TODO: apply same thing for firstname, lastname, etc
+        if ($name === 'email') {
+            $this->placeholder = 'john.doe@example.com';
+        } else {
+            $this->placeholder = $placeholder;
+        }
         $this->label = $label ?? $placeholder;
         $this->inputValue = $inputValue;
         $this->readonly = $readonly ? 'readonly' : '';

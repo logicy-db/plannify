@@ -2,24 +2,29 @@
 @section('title', 'Event listing')
 @section('bodyClass', 'event-listing-page')
 @section('content')
-    <div class="action-bar">
-        <button class="create-event success">
-            <a href="{{ route('events.create') }}">Create event</a>
-        </button>
-    </div>
+    @can('create', \App\Models\Event::class)
+        <div class="action-bar">
+            <button class="create-event success">
+                <a href="{{ route('events.create') }}">Create event</a>
+            </button>
+        </div>
+    @endcan
     <h2>Planned events</h2>
     <div class="search-bar">
-        @csrf
-        <input class="search search-firstname" type="text" placeholder="Search by first name..." />
+        <form class="form event-search">
+            @csrf
+            <input class="search search-firstname" type="text" placeholder="Search by first name..." />
+        </form>
     </div>
     <div class="event-card-wrapper card-wrapper">
         @include('events.search', ['events' => $plannedEvents])
     </div>
     <h2>Past events</h2>
-    <div class="search-bar">
-        @csrf
-        <input class="search search-firstname" type="text" placeholder="Search by first name..." />
-    </div>
+    {{-- TODO: remove   --}}
+{{--    <div class="search-bar">--}}
+{{--        @csrf--}}
+{{--        <input class="search search-firstname" type="text" placeholder="Search by first name..." />--}}
+{{--    </div>--}}
     <div class="event-card-wrapper card-wrapper">
         @include('events.search', ['events' => $pastEvents])
     </div>

@@ -7,10 +7,6 @@
         .profile-cards {
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 
-            .avatar {
-                width: 130px;
-            }
-
             .profile-card {
                 .full-name {
                     font-size: 20px;
@@ -21,6 +17,11 @@
 
                 .job-position {
                     margin: 15px 0;
+                }
+
+                .avatar {
+                    object-fit: contain;
+                    max-height: 150px;
                 }
             }
         }

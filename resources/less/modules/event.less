@@ -3,7 +3,6 @@
         .action-bar {
             .create-event {
                 min-height: 30px;
-                margin: auto 0 auto auto;
             }
         }
 
@@ -59,7 +58,7 @@
 
             .content {
                 padding: 0;
-                max-width: 500px;
+                max-width: 600px;
             }
         }
 
@@ -105,6 +104,22 @@
                 margin: 0 auto;
             }
         }
+
+        table {
+            .profile-link {
+                margin-left: 0;
+            }
+        }
+    }
+
+    &-create-page {
+        .event-preview {
+            display: none;
+        }
+
+        .event-time-wrapper {
+            display: flex;
+        }
     }
 }
 
@@ -119,6 +134,7 @@
 
     .name {
         font-size: 20px;
+        margin: 5px 0 10px;
     }
 
     .description {
@@ -135,4 +151,10 @@
     table {
         margin-bottom: 5px;
     }
+}
+
+.event-preview {
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
 }

@@ -54,7 +54,9 @@ class UserInvitationPolicy
      */
     public function update(User $user, UserInvitation $userInvitation)
     {
-        //
+        // TODO: REFACTOR ALL - use exists in every policy
+        return $userInvitation->exists &&
+            in_array($user->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
     }
 
     /**

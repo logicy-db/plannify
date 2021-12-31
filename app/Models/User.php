@@ -97,4 +97,12 @@ class User extends Authenticatable
     public function hasSystemAccess() {
         return in_array($this->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
     }
+
+    public function getProfileUrl() {
+        if ($this->profile) {
+            return route('profiles.show', $this->profile);
+        } else {
+            return '';
+        }
+    }
 }

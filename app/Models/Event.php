@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @mixin Builder
@@ -14,8 +14,8 @@ class Event extends Model
 {
     use HasFactory;
 
-    public const IMAGE_FOLDER = 'images/events';
-    public const DEFAULT_IMAGE = self::IMAGE_FOLDER.'/default.png';
+    public const IMAGE_FOLDER = 'event_previews';
+    public const DEFAULT_IMAGE = self::IMAGE_FOLDER.'/default.jpg';
 
     public const USER_GOING = 1;
     public const USER_CANCELED = 2;
@@ -79,8 +79,12 @@ class Event extends Model
     }
 
     public function getPreviewUrl() {
-        return is_file(public_path(sprintf('%s/%s',self::IMAGE_FOLDER, $this->preview))) ?
-            url(sprintf('%s/%s',self::IMAGE_FOLDER, $this->preview)) :
-            url(self::DEFAULT_IMAGE);
+        $storage = Storage::disk('public');
+
+        if ($storage->exists($this->preview)) {
+            return $storage->url($this->preview);
+        } else {
+            return $storage->url(self::DEFAULT_IMAGE);
+        }
     }
 }

@@ -98,9 +98,6 @@ class AuthController extends Controller
             return redirect()->back()->with('error', 'Invitation link has already expired.');
         }
 
-        $invitation->status = UserInvitation::ACCEPTED;
-        $invitation->save();
-
         $user = new User;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);

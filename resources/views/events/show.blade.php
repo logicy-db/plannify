@@ -6,7 +6,7 @@
         <div class="action-bar">
             <button class="alert update-event">
                 {{-- TODO: wrong route --}}
-                <a href="{{ route('events.create') }}">Update event</a>
+                <a href="{{ route('events.edit', $event) }}">Update event</a>
             </button>
         </div>
     @endcan
@@ -20,7 +20,7 @@
         <img class="event-preview" src="{{ $event->getPreviewUrl() }}" alt="Event preview">
         <div class="content">
             <div class="name">{{ $event->name }}</div>
-            <div class="description">{{ $event->description }}</div>
+            <div class="description">{!! nl2br(e($event->description)) !!}</div>
             <div class="event-info-wrapper">
                 <table class="event-info">
                     <tr>
@@ -108,11 +108,18 @@
                             <tr>
                                 <td>{{ ++$index }}.</td>
                                 <td>
-                                    {{-- TODO: add link to profile --}}
-                                    @if ($participant->id === Auth::id())
-                                        <b>{{ $participant->getFullname() }} (you)</b>
+                                    @if ($participant->profile)
+                                        <button class="profile-link">
+                                            <a href="{{ $participant->getProfileUrl() }}">
+                                                @if ($participant->id === Auth::id())
+                                                    <b>{{ $participant->getFullname() }} (you)</b>
+                                                @else
+                                                    {{ $participant->getFullname() }}
+                                                @endif
+                                            </a>
+                                        </button>
                                     @else
-                                        {{ $participant->getFullname() }}
+                                        {{ $participant->email }}
                                     @endif
                                 </td>
                                 @can('cancelUserParticipation', [$event, $participant])
@@ -138,14 +145,20 @@
                             <tr>
                                 <td>{{ ++$index }}.</td>
                                 <td>
-                                    {{-- TODO: add link to profile --}}
-                                    @if ($queuedUser->id === Auth::id())
-                                        <b>{{ $queuedUser->getFullname() }} (you)</b>
+                                    @if ($queuedUser->profile)
+                                        <button class="profile-link">
+                                            <a href="{{ $queuedUser->getProfileUrl() }}">
+                                                @if ($queuedUser->id === Auth::id())
+                                                    <b>{{ $queuedUser->getFullname() }} (you)</b>
+                                                @else
+                                                    {{ $queuedUser->getFullname() }}
+                                                @endif
+                                            </a>
+                                        </button>
                                     @else
-                                        {{ $queuedUser->getFullname() }}
+                                        {{ $queuedUser->email }}
                                     @endif
                                 </td>
-                                {{-- TODO: add possibility to remove user from queue--}}
                                 @can('cancelUserQueue', [$event, $queuedUser])
                                     <td>
                                         <form class="cancel-queue" action="{{ route('events.cancelQueue', [$event, $queuedUser]) }}" method="POST">
@@ -168,11 +181,18 @@
                                 <tr>
                                     <td>{{ ++$index }}.</td>
                                     <td>
-                                        {{-- TODO: add link to profile --}}
-                                        @if ($canceledUser->id === Auth::id())
-                                            <b>{{ $canceledUser->getFullname() }} (you)</b>
+                                        @if ($canceledUser->profile)
+                                            <button class="profile-link">
+                                                <a href="{{ $canceledUser->getProfileUrl() }}">
+                                                    @if ($canceledUser->id === Auth::id())
+                                                        <b>{{ $canceledUser->getFullname() }} (you)</b>
+                                                    @else
+                                                        {{ $canceledUser->getFullname() }}
+                                                    @endif
+                                                </a>
+                                            </button>
                                         @else
-                                            {{ $canceledUser->getFullname() }}
+                                            {{ $canceledUser->email }}
                                         @endif
                                     </td>
                                     @can('allowParticipation', [$event, $canceledUser])

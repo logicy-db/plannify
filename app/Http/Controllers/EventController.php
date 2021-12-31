@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\EventStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use function React\Promise\all;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -54,37 +55,34 @@ class EventController extends Controller
         $min = date('Y-m-d\TH:i');
         $max = date('Y-m-d\TH:i', strtotime('+100 years'));
 
+        //
         $request->validate([
             'preview' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required',
             'description' => 'required',
-            // TODO: event can be remote :(
             'location' => 'required',
-            // TODO: refactor
-            // TODO: timezones???
+            'meeting_point' => 'required',
             'starting_time' => "required|date_format:\"Y-m-d\TH:i\"|after:{$min}|before:{$max}",
+            'ending_time' => "required|date_format:\"Y-m-d\TH:i\"|after:starting_time",
             'attendees_limit' => 'required|numeric',
         ]);
 
         $event = new Event();
+        $imagePath = $request->file('preview')->store(Event::IMAGE_FOLDER, 'public');
+
         $event->name = $request->name;
         $event->description = $request->description;
+        $event->meeting_point = $request->meeting_point;
+        $event->status_id = EventStatus::STATUS_ACTIVE;
         $event->location = $request->location;
         $event->starting_time = date('Y-m-d H:i:s', strtotime($request->starting_time));
+        $event->ending_time = date('Y-m-d H:i:s', strtotime($request->ending_time));
         $event->attendees_limit = $request->attendees_limit;
+        $event->preview = $imagePath;
         $event->save();
 
-        $image = $request->file('preview');
-        $imageName = sprintf('%s_%s.%s', $event->id, time(), $image->getClientOriginalExtension());
-        $image->move(
-            public_path(Event::IMAGE_FOLDER),
-            $imageName
-        );
-
-        $event->preview = $imageName;
-        $event->save();
-
-        return redirect()->route('events.show', $event);
+        return redirect()->route('events.show', $event)
+            ->with('success', 'New event has been created!');
     }
 
     /**
@@ -126,33 +124,36 @@ class EventController extends Controller
             'preview' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required',
             'description' => 'required',
-            // TODO: event can be remote :(
             'location' => 'required',
-            // TODO: refactor
-            // TODO: timezones???
+            'meeting_point' => 'required',
             'starting_time' => "required|date_format:\"Y-m-d\TH:i\"|after:{$min}|before:{$max}",
+            'ending_time' => "required|date_format:\"Y-m-d\TH:i\"|after:starting_time",
             'attendees_limit' => 'required|numeric',
         ]);
 
         $event->name = $request->name;
         $event->description = $request->description;
+        $event->meeting_point = $request->meeting_point;
         $event->location = $request->location;
         $event->starting_time = date('Y-m-d H:i:s', strtotime($request->starting_time));
+        $event->ending_time = date('Y-m-d H:i:s', strtotime($request->ending_time));
         $event->attendees_limit = $request->attendees_limit;
 
-        if ($image = $request->file('preview')) {
-            $imageName = sprintf('%s_%s.%s', $event->id, time(), $image->getClientOriginalExtension());
-            $image->move(
-                public_path(Event::IMAGE_FOLDER),
-                $imageName
-            );
-            $event->preview = $imageName;
+        if ($request->file('preview')) {
+            $storage = Storage::disk('public');
+
+            if ($storage->exists($event->preview)) {
+                $storage->delete($event->preview);
+            }
+
+            $event->preview = $request->file('preview')->store(Event::IMAGE_FOLDER, 'public');
         }
 
-        // TODO: remove old picture
         $event->save();
 
-        return redirect()->route('events.show', $event);
+        return redirect()
+            ->route('events.show', $event)
+            ->with('success', 'Event has been updated');
     }
 
     /**
@@ -256,10 +257,11 @@ class EventController extends Controller
      * Search profiles by specified parameters.
      */
     public function search(Request $request) {
-        // TODO: refactor
-        $first_name = $request->first_name;
-        $profiles = Profile::where('first_name', 'like', "%$first_name%")
-            ->get();
-        return view('profiles.search', ['profiles' => $profiles]);
+        $this->authorize('restore');
+//        $first_name = $request->first_name;
+//        $profiles = Profile::where('first_name', 'like', "%$first_name%")
+//            ->get();
+        // TODO: these are not profiles!
+        return view('profiles.search', ['profiles' =>[]]);
     }
 }

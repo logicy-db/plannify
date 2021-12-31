@@ -24,7 +24,7 @@ class CreateUserInvitationsTable extends Migration
             $table->timestamp('expires_at');
             $table->timestamps();
 
-            $table->foreign('invited_by')->references('id')->on('users');
+            $table->foreign('invited_by')->references('id')->on('users')->onDelete('cascade');
         });
 
         // TODO: add codeficator table

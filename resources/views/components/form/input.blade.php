@@ -1,4 +1,4 @@
-{{-- Template for user form fields --}}
+{{-- Template for input fields --}}
 <label for="{{ $name }}">{{ $label }}</label>
 <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" placeholder="{{ $placeholder }}"
        value="{{ $inputValue ?? old($name) }}" {{ $readonly }} {{ $additional }}>

@@ -8,11 +8,30 @@
         }
 
         .table-wrapper {
-            overflow-x:auto;
+            table {
+                &.invite-list {
+                    width: 100%;
 
-            table.invite-list {
-                overflow-x:auto;
-                width: 100%;
+                    td {
+                        text-align: center;
+                        padding: 0 10px;
+
+                        &.date {
+                            min-width: 175px;
+                        }
+
+                        button {
+                            &.status,
+                            &.profile-link {
+                                margin: 0 auto;
+                            }
+                        }
+                    }
+
+                    .resend-invite {
+                        height: 40px;
+                    }
+                }
             }
         }
     }

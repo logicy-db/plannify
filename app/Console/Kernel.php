@@ -26,14 +26,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Expire user invitations if such exist
+        // Expire user invitations (if such exist)
         $schedule->call(function () {
-            $expiredInvitations = UserInvitation::where('expires_at', '>', Carbon::now());
+            $expiredInvitations = UserInvitation::where('expires_at', '<', Carbon::now())->get();
             /** @var UserInvitation $expiredInvitation */
             foreach($expiredInvitations as $expiredInvitation) {
                 $expiredInvitation->status = UserInvitation::EXPIRED;
+                $expiredInvitation->save();
             }
-        })->everyMinute()->when(is_null(UserInvitation::where('expires_at', '>', Carbon::now())->first()));
+        })->everyMinute()->when(!is_null(UserInvitation::where('expires_at', '<', Carbon::now())->first()));
     }
 
     /**

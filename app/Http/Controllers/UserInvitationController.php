@@ -129,4 +129,22 @@ class UserInvitationController extends Controller
     {
         //
     }
+
+    public function resendInvite(UserInvitation $userInvitation)
+    {
+        // TODO: refactor
+        $this->authorize('update', $userInvitation);
+
+        $userInvitation->expires_at = date(
+            'Y-m-d H:i:s',
+            strtotime('+24 hours', strtotime($userInvitation->expires_at))
+        );
+        $userInvitation->status = UserInvitation::PENDING;
+        $userInvitation->save();
+
+        Mail::to($userInvitation->email)->send(new InviteSent($userInvitation));
+
+        return redirect()->route('system.invitations.index')
+            ->with('success', "Invitation to email {$userInvitation->email} has been resent.");
+    }
 }

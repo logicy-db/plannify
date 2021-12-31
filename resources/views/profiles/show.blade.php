@@ -9,8 +9,4 @@
         <div class="email">{{ $profile->user->email }}</div>
         <div class="phone">{{ $profile->phone_number }}</div>
     </div>
-    <div class="visited-events">
-        <p class="title">My events</p>
-        {{-- TODO: Implement--}}
-    </div>
 @endsection

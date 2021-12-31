@@ -5,6 +5,10 @@
 
             .user-table {
                 width: 100%;
+
+                button {
+                    margin: 0 auto;
+                }
             }
         }
     }
@@ -15,12 +19,61 @@
 
             .edit-form {
                 margin-left: auto;
+
+                .start-editing {
+                    display: block;
+                }
+
+                .stop-editing {
+                    display: none;
+                }
+
+                &.form-being-edited {
+                    .start-editing {
+                        display: none;
+                    }
+
+                    .stop-editing {
+                        display: block;
+                    }
+                }
             }
         }
 
-        .view-user {
+        .form {
             button:not(.edit-form) {
                 display: none;
+            }
+
+            &.account-form {
+                .password-section,
+                .new-password {
+                    display: none;
+                }
+
+                .new-password-toggler {
+                    display: flex;
+                    margin-top: 10px;
+
+                    label{
+                        width: fit-content;
+                        margin-top: 12px;
+                    }
+
+                    #set-new-password {
+                        width: 25px;
+                    }
+                }
+            }
+
+            &.profile-form {
+                .avatar-wrapper {
+                    text-align: center;
+                }
+
+                .avatar-input {
+                    display: none;
+                }
             }
         }
     }

@@ -26,7 +26,6 @@ Route::middleware(['guest'])->group(function () {
     // Only for guest users
     Route::get('/login', [AuthController::class, 'loginView'])->name('login');
     Route::post('/login', [AuthController::class, 'loginUser']);
-    // TODO: modify registration to add invite tokens or e-mail domain check
     Route::get('/registration', [AuthController::class, 'registrationView'])->name('registration')
         ->middleware('canRegistrate');
     Route::post('/registration', [AuthController::class, 'registerUser']);
@@ -49,6 +48,8 @@ Route::middleware(['auth'])->group(function () {
             // System routes
             Route::get('/dashboard', [SystemController::class, 'dashboardView'])->name('dashboard');
             Route::resource('users', UserController::class)->only('index');
+            Route::post('invitations/{invite}/resend', [UserInvitationController::class, 'resendInvite'])
+                ->name('invitations.resendInvite');
             Route::resource('invitations', UserInvitationController::class);
         });
 

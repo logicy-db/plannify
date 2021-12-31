@@ -3,7 +3,8 @@
 /public/storage
 /storage/*.key
 /public
-!/public/images/avatars/default.png
+/storage/app/public/event_previews/*
+/storage/app/public/user_avatars/*
 /vendor
 .env
 .env.backup

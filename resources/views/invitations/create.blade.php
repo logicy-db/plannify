@@ -9,6 +9,6 @@
         @if (sizeof($roleOptions))
             <x-form.select name="role_id" placeholder="Role" :options="$roleOptions"/>
         @endif
-        <button type="submit">Invite</button>
+        <button class="success" type="submit">Invite</button>
     </form>
 @endsection

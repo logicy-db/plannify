@@ -40,7 +40,6 @@ class InviteSent extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        // TODO: update email status
         return $this->subject('Invitation to register in ' . config('app.name'))
             ->markdown('emails.invitation.sent');
     }

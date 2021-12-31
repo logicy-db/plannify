@@ -42,11 +42,6 @@ class Input extends Component
     public $additional;
 
     /**
-     * @var string
-     */
-    public $lable;
-
-    /**
      * Create a new component instance.
      *
      * @return void

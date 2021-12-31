@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -52,19 +52,14 @@ class ProfileController extends Controller
             'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $image = $request->file('avatar');
-        $imageName = sprintf('%s_%s.%s', Auth::id(), time(), $image->getClientOriginalExtension());
-        $image->move(
-            public_path(Profile::IMAGE_FOLDER),
-            $imageName
-        );
-
         $profile = new Profile();
+        $imagePath = $request->file('avatar')->store(Profile::IMAGE_FOLDER, 'public');
+
         $profile->first_name = $request->first_name;
         $profile->last_name = $request->last_name;
         $profile->phone_number = $request->phone_number;
         $profile->address = $request->address;
-        $profile->avatar = $imageName;
+        $profile->avatar = $imagePath;
 
         Auth::user()->profile()->save($profile);
 
@@ -115,14 +110,14 @@ class ProfileController extends Controller
         $profile->phone_number = $request->phone_number;
         $profile->address = $request->address;
 
-        if ($image = $request->file('avatar')) {
-            $imageName = sprintf('%s_%s.%s', Auth::id(), time(), $image->getClientOriginalExtension());
-            $image->move(
-                public_path(Profile::IMAGE_FOLDER),
-                $imageName
-            );
+        if ($request->file('avatar')) {
+            $storage = Storage::disk('public');
 
-            $profile->avatar = $imageName;
+            if ($storage->exists($profile->avatar)) {
+                $storage->delete($profile->avatar);
+            }
+
+            $profile->avatar = $request->file('avatar')->store(Profile::IMAGE_FOLDER, 'public');
         }
 
         $profile->save();

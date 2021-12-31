@@ -31,7 +31,7 @@ class EventSeeder extends Seeder
                 'description' => $faker->paragraph(4),
                 'location' => $faker->address(),
                 'meeting_point' => $faker->address(),
-                'event_status_id' => rand(1,3),
+                'status_id' => rand(1,3),
                 'starting_time' => $starting_time,
                 'ending_time' => $ending_time,
                 'attendees_limit' => $attendeeLimit,

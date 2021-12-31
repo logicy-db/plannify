@@ -53,6 +53,13 @@
     {{--  Page content goes below  --}}
     @yield('content')
 </div>
+<footer>
+    <div class="footer-content">
+        Author: Daniels Buls<br/>
+        Made for University of Latvia<br/>
+        2021
+    </div>
+</footer>
 <script type="text/javascript">
     $(document).ready(function () {
         // Submitting of log out form

@@ -50,7 +50,6 @@ class Input extends Component
     {
         $this->name = $name;
         $this->type = $type;
-        // TODO: apply same thing for firstname, lastname, etc
         if ($name === 'email') {
             $this->placeholder = 'john.doe@example.com';
         } else {

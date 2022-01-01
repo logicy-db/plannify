@@ -14,7 +14,6 @@ class InviteSent extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    // TODO: Add docs
     public $inviteSender;
     public $role;
     public $registrationLink;

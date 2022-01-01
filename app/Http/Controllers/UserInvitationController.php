@@ -85,54 +85,8 @@ class UserInvitationController extends Controller
             ->with('success', "Invitation to email {$request->email} has been sent.");
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\UserInvitation  $userInvitation
-     * @return \Illuminate\Http\Response
-     */
-    public function show(UserInvitation $userInvitation)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\UserInvitation  $userInvitation
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(UserInvitation $userInvitation)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\UserInvitation  $userInvitation
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, UserInvitation $userInvitation)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\UserInvitation  $userInvitation
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(UserInvitation $userInvitation)
-    {
-        //
-    }
-
     public function resendInvite(UserInvitation $userInvitation)
     {
-        // TODO: refactor
         $this->authorize('update', $userInvitation);
 
         $userInvitation->expires_at = date(

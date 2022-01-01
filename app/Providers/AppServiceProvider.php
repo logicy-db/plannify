@@ -28,7 +28,6 @@ class AppServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // Blade directives
-        // TODO: remove directive and replace it with policy accordingly
         Blade::if('hasSystemAccess', fn() => (auth()->user()->hasSystemAccess()));
         Blade::if('hasProfile', fn() => (!is_null(auth()->user()->profile)));
     }

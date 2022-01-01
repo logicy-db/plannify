@@ -72,30 +72,6 @@ class EventPolicy
             !is_null($event);
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, Event $event)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, Event $event)
-    {
-        //
-    }
-
     public function participate(User $user, Event $event) {
         return !$event->users->contains($user->id) && !$event->isFull();
     }

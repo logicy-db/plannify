@@ -34,7 +34,6 @@
                                     {{ $event->meeting_point }}
                                 </td>
                             </tr>
-                            {{-- TODO: Add attendees and people in queue info--}}
                         </table>
                     </div>
                 </div>

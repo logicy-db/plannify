@@ -78,17 +78,6 @@ class ProfileController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Profile  $profile
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Profile $profile)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param Request $request
@@ -123,17 +112,6 @@ class ProfileController extends Controller
         $profile->save();
 
         return back()->with('success', sprintf('User %s was updated', $profile->user->getFullname()));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Profile  $profile
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Profile $profile)
-    {
-        //
     }
 
     /*

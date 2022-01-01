@@ -58,40 +58,4 @@ class ProfilePolicy
         return $user->id === $profile->id ||
             in_array($user->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
     }
-
-    /**
-     * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Profile  $profile
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function delete(User $user, Profile $profile)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Profile  $profile
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, Profile $profile)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Profile  $profile
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, Profile $profile)
-    {
-        //
-    }
 }

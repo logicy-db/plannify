@@ -1,13 +1,26 @@
 .user {
     &-listing-page {
         .page-wrapper {
-            text-align: center;
-
             .user-table {
                 width: 100%;
 
                 button {
-                    margin: 0 auto;
+                    margin-right: auto;
+                    margin-left: 0;
+                    height: 25px;
+                }
+
+                td {
+                    padding: 5px 10px;
+                    white-space: nowrap;
+                }
+
+                .user-actions {
+                    display: flex;
+
+                    button {
+                        margin-left: 5px;
+                    }
                 }
             }
         }

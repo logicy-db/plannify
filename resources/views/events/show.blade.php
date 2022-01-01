@@ -5,8 +5,7 @@
     @can('update', $event)
         <div class="action-bar">
             <button class="alert update-event">
-                {{-- TODO: wrong route --}}
-                <a href="{{ route('events.edit', $event) }}">Update event</a>
+                <a href="{{ route('events.edit', $event) }}">Edit event</a>
             </button>
         </div>
     @endcan

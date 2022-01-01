@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Models\EventStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -73,7 +72,6 @@ class EventController extends Controller
         $event->name = $request->name;
         $event->description = $request->description;
         $event->meeting_point = $request->meeting_point;
-        $event->status_id = EventStatus::STATUS_ACTIVE;
         $event->location = $request->location;
         $event->starting_time = date('Y-m-d H:i:s', strtotime($request->starting_time));
         $event->ending_time = date('Y-m-d H:i:s', strtotime($request->ending_time));

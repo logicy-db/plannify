@@ -39,7 +39,7 @@
                         <td>
                             <form class="resend-invite" action="{{ route('system.invitations.resendInvite', $invite) }}" method="POST">
                                 @csrf
-                                <button class="success">Resend invite</button><br/>
+                                <button class="danger">Resend invite</button><br/>
                             </form>
                         </td>
                     </tr>
@@ -47,10 +47,4 @@
             </table>
         </div>
     @endisset
-    {{--    <div class="search-bar">--}}
-{{--        @csrf--}}
-{{--    </div>--}}
-{{--    <div class="event-card-wrapper card-wrapper">--}}
-{{--        @include('events.search')--}}
-{{--    </div>--}}
 @endsection

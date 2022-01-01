@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\CanRegistrateMiddleware;
 use App\Http\Middleware\HasProfileMiddleware;
+use App\Http\Middleware\IsUserActiveMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\hasSystemAccessMiddleware;
 use \App\Http\Middleware\Authenticate;
@@ -70,6 +71,7 @@ class Kernel extends HttpKernel
         'hasSystemAccess' => hasSystemAccessMiddleware::class,
         'hasProfile' => HasProfileMiddleware::class,
         'canRegistrate' => CanRegistrateMiddleware::class,
+        'isActiveUser' => IsUserActiveMiddleware::class,
     ];
 
     /**

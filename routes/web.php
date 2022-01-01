@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
@@ -25,7 +24,7 @@ use App\Http\Controllers\UserInvitationController;
 Route::middleware(['guest'])->group(function () {
     // Only for guest users
     Route::get('/login', [AuthController::class, 'loginView'])->name('login');
-    Route::post('/login', [AuthController::class, 'loginUser']);
+    Route::post('/login', [AuthController::class, 'loginUser'])->middleware('isActiveUser');
     Route::get('/registration', [AuthController::class, 'registrationView'])->name('registration')
         ->middleware('canRegistrate');
     Route::post('/registration', [AuthController::class, 'registerUser']);
@@ -35,7 +34,7 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetUserPassword'])->name('password.update');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'isActiveUser'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logoutUser'])->name('logout');
     Route::resource('profiles', ProfileController::class)->only(['create', 'store']);
 
@@ -47,12 +46,15 @@ Route::middleware(['auth'])->group(function () {
         ], function () {
             // System routes
             Route::get('/dashboard', [SystemController::class, 'dashboardView'])->name('dashboard');
+            // TODO: why is it here and outside of system?
             Route::resource('users', UserController::class)->only('index');
             Route::post('invitations/{invite}/resend', [UserInvitationController::class, 'resendInvite'])
                 ->name('invitations.resendInvite');
             Route::resource('invitations', UserInvitationController::class);
+            Route::put('users/{user}/change-status', [UserController::class, 'changeUserStatus'])
+                ->name('users.changeStatus');
         });
-
+        // TODO: move to the system
         Route::resource('users', UserController::class);
 
         Route::post('profiles/search', [ProfileController::class, 'search'])->name('profiles.search');
@@ -72,8 +74,6 @@ Route::middleware(['auth'])->group(function () {
             ->name('events.allowParticipation');
         Route::resource('events', EventController::class);
 
-        // Page routes
-        Route::get('/', [PageController::class, 'home'])->name('home');
-        Route::get('/projects', [PageController::class, 'home'])->name('projects');
+        Route::view('/','page.home')->name('home');
     });
 });

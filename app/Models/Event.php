@@ -53,10 +53,6 @@ class Event extends Model
             ->withPivot(['participation_type_id']);
     }
 
-    public function eventStatus() {
-        return $this->belongsTo(EventStatus::class);
-    }
-
     public function usersCanceled() {
         return $this->users()->wherePivot('participation_type_id', Event::USER_CANCELED)
             ->orderByPivot('updated_at')->get();

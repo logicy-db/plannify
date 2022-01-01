@@ -11,6 +11,7 @@
                     <th>Email</th>
                     <th>Full name</th>
                     <th>Role</th>
+                    <th>Status</th>
                     <th></th>
                 </tr>
                 @foreach($users as $user)
@@ -28,9 +29,31 @@
                         </td>
                         <td>{{ $user->role->name }}</td>
                         <td>
-                            <button class="alert">
-                                <a class="view-btn" href="{{ route('users.show', $user->id) }}">Edit user</a>
-                            </button>
+                            @if($user->active)
+                                <button class="success">Active</button>
+                            @else
+                                <button class="disabled" disabled>Disabled</button>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="user-actions">
+                                <button class="alert">
+                                    <a class="view-btn" href="{{ route('users.show', $user->id) }}">Edit user</a>
+                                </button>
+                                @can('changeUserStatus', $user)
+                                    <form action="{{ route('system.users.changeStatus', $user->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <button class="danger">
+                                            @if($user->active)
+                                                Disable user
+                                            @else
+                                                Enable user
+                                            @endif
+                                        </button>
+                                    </form>
+                                @endcan
+                            </div>
                         </td>
                     </tr>
                 @endforeach

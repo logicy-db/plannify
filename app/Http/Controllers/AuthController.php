@@ -137,14 +137,13 @@ class AuthController extends Controller
             if (Hash::check($request->password, $user->password)) {
                 return redirect()->route('home');
             } else {
-                $error = ['password' => 'Provided password is incorrect.'];
+                $error = 'Provided password is incorrect.';
             }
         } else {
-            $error = ['email' => 'Provided email is not present in our records.'];
+            $error = 'Provided email is not present in our records.';
         }
 
-        return back()->with('error', $error)
-                     ->withInput($request->only('email'));
+        return back()->with('error', $error)->withInput($request->only('email'));
     }
 
     /**

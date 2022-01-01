@@ -139,4 +139,19 @@ class UserController extends Controller
     {
         //
     }
+
+    public function changeUserStatus(User $user) {
+        $this->authorize('changeUserStatus', $user);
+
+        if ($user->active) {
+            $user->active = User::STATUS_DISABLED;
+            $msg = 'User has been disabled.';
+        } else {
+            $user->active = User::STATUS_ACTIVE;
+            $msg = 'User has been activated.';
+        }
+        $user->save();
+
+        return back()->with('success', $msg);
+    }
 }

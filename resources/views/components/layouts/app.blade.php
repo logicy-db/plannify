@@ -18,7 +18,6 @@
             <div class="nav-content">
                 @hasProfile
                     <a href="{{ route('profiles.index') }}">People</a>
-                    <a href="{{ url('/') }}">Projects</a>
                     <a href="{{ route('events.index') }}">Events</a>
                     <a href="{{ route('users.show', Auth::user()) }}">My account</a>
                     @hasSystemAccess
@@ -87,8 +86,8 @@
             }, 5000);
         });
 
+        // Popup to confirm dangerous actions
         $('button.danger').on('click', function (e) {
-            // Popup to confirm dangerous actions
             if (confirm('Are you sure about this action?') === false) {
                 e.preventDefault();
             }

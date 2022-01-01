@@ -3,6 +3,7 @@
 @section('bodyClass', 'event-listing-page')
 @section('content')
     @can('create', \App\Models\Event::class)
+        <h2>Actions</h2>
         <div class="action-bar">
             <button class="create-event success">
                 <a href="{{ route('events.create') }}">Create event</a>
@@ -13,7 +14,7 @@
     <div class="search-bar">
         <form class="form event-search">
             @csrf
-            <input class="search search-firstname" type="text" placeholder="Search by first name..." />
+            <input id="event-name" name="event-name" type="text" placeholder="Search by event name" />
         </form>
     </div>
     <div class="event-card-wrapper card-wrapper">
@@ -30,7 +31,7 @@
     </div>
     <script>
         $(document).ready(function () {
-            $('.search-firstname').change(function () {
+            $('input#event-name').change(function () {
                 $.ajax({
                     url: '{{ route('events.search') }}',
                     method: 'POST',

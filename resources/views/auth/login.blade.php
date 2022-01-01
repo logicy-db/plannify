@@ -7,7 +7,7 @@
         <h2 class="text">Log in to your account</h2>
         <x-form.input name="email" type="email" placeholder="Email address"/>
         <x-form.input name="password" type="password" placeholder="Password"/>
-        <button type="submit">Log in</button>
+        <button class="success" type="submit">Log in</button>
     </form>
     <br/>
 @endsection

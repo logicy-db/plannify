@@ -97,4 +97,10 @@ class UserPolicy
     {
         //
     }
+
+    public function changeUserStatus(User $user, User $model)
+    {
+        return $model->exists &&
+            $user->role_id === Role::ADMIN;
+    }
 }

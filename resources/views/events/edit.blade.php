@@ -21,7 +21,6 @@
                       :additional="sprintf('min=%s max=%s', $min, $max)" :inputValue="date('Y-m-d\TH:i', strtotime($event->starting_time))"/>
         <x-form.input name="ending_time" type="datetime-local" placeholder="Ending time (aprox.)"
                       :additional="sprintf('min=%s max=%s', $min, $max)" :inputValue="date('Y-m-d\TH:i', strtotime($event->ending_time))"/>
-        <x-form.input name="attendees_limit" type="number" placeholder="Attendees limit" :inputValue="$event->attendees_limit"/>
         <button class="success" type="submit">Update event</button>
     </form>
     <script>

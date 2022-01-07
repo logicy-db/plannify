@@ -6,6 +6,7 @@
         @csrf
         <h2 class="text">Forgot password?</h2>
         <x-form.input name="email" type="email" placeholder="Email address"/>
-        <button type="submit">Restore</button>
+        <button class="success" type="submit">Restore</button>
+        <button type="button"><a href="{{ route('login') }}">Want to log in?</a></button>
     </form>
 @endsection

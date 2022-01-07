@@ -41,13 +41,6 @@ class UserController extends Controller
             foreach (Role::all() as $role) {
                 $roleOptions[$role->id] = $role->name;
             }
-        } else {
-            // HR can change only roles of QA and PM
-            if (Auth::id() !== $user->id && in_array($user->role_id, [Role::QUALITY_ASSURANCE, Role::PROJECT_MANAGER])) {
-                foreach (Role::whereIn('id', [Role::QUALITY_ASSURANCE, Role::PROJECT_MANAGER])->get() as $role) {
-                    $roleOptions[$role->id] = $role->name;
-                }
-            }
         }
 
         return view(
@@ -68,24 +61,19 @@ class UserController extends Controller
         if (Auth::id() === $user->id) {
             // If account owner updates the data
             $request->validate([
-                'email' => sprintf('required|email|unique:users,email,%s', $user->id),
+                'email' => sprintf('required|email|max:255|unique:users,email,%s', $user->id),
                 'current_password' => 'required|current_password',
-                'new_password' => 'nullable|confirmed|min:8|max:20',
+                'new_password' => 'nullable|confirmed|min:8',
             ]);
 
             if ($request->new_password){
                 $user->password = Hash::make($request->new_password);
             }
             $user->email = $request->email;
-        } else {
+        } elseif (Auth::user()->role_id === Role::ADMIN) {
             $request->validate([
                 'email' => sprintf('required|email|unique:users,email,%s', $user->id),
-                // HR can change only QA and PM user roles
-                'role_id' => sprintf(
-                    'required|exists:roles,id%s',
-                    Auth::user()->role_id === Role::ADMIN ? '' :
-                        sprintf("|in:%s,%s", Role::QUALITY_ASSURANCE, Role::PROJECT_MANAGER)
-                ),
+                'role_id' => 'required|exists:roles,id'
             ]);
 
             $user->email = $request->email;
@@ -94,7 +82,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return back()->with('success', sprintf('User %s was updated', $user->getFullname()));
+        return back()->with('success', sprintf('Account data were updated'));
     }
 
     public function changeUserStatus(User $user) {

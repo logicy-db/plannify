@@ -45,10 +45,10 @@ class ProfileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'phone_number' => 'required',
-            'address' => 'required',
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'phone_number' => 'required|max:255',
+            'address' => 'required|max:255',
             'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -63,7 +63,7 @@ class ProfileController extends Controller
 
         Auth::user()->profile()->save($profile);
 
-        return redirect()->route('home');
+        return redirect()->route('home')->with('success', 'You have configured your profile!');
     }
 
     /**
@@ -87,10 +87,10 @@ class ProfileController extends Controller
     public function update(Request $request, Profile $profile)
     {
         $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'phone_number' => 'required',
-            'address' => 'required',
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'phone_number' => 'required|max:255',
+            'address' => 'required|max:255',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -111,17 +111,27 @@ class ProfileController extends Controller
 
         $profile->save();
 
-        return back()->with('success', sprintf('User %s was updated', $profile->user->getFullname()));
+        return back()->with('success', 'Profile has been updated.');
     }
 
     /*
      * Search profiles by specified parameters.
      */
     public function search(Request $request) {
-        // TODO: refactor
-        $first_name = $request->first_name;
-        $profiles = Profile::where('first_name', 'like', "%$first_name%")
+        $this->authorize('viewAny', Auth::user());
+
+        $request->validate([
+            'first_name' => 'max:50',
+            'last_name' => 'max:50',
+        ]);
+
+        $firstName = $request->first_name;
+        $lastName = $request->last_name;
+
+        $profiles = Profile::where('first_name', 'like', "%$firstName%")
+            ->where('last_name', 'like', "%$lastName%")
             ->get();
+
         return view('profiles.search', ['profiles' => $profiles]);
     }
 }

@@ -19,7 +19,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
+        return in_array($user->role_id, [Role::ADMIN]);
     }
 
     /**
@@ -32,7 +32,7 @@ class UserPolicy
     public function view(User $user, User $model)
     {
         return $user->id === $model->id ||
-            in_array($user->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
+            in_array($user->role_id, [Role::ADMIN]);
     }
 
     /**
@@ -57,9 +57,7 @@ class UserPolicy
     public function update(User $user, User $model)
     {
         return $user->id === $model->id ||
-            $user->role_id === Role::ADMIN ||
-            (in_array($model->role_id, [Role::QUALITY_ASSURANCE, Role::PROJECT_MANAGER]) &&
-                $user->role_id === Role::HUMAN_RESOURCES);
+            in_array($user->role_id, [Role::ADMIN]);
     }
 
     public function changeUserStatus(User $user, User $model)

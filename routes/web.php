@@ -46,9 +46,9 @@ Route::middleware(['auth', 'isActiveUser'])->group(function () {
         ], function () {
             // System routes
             Route::get('/dashboard', [SystemController::class, 'dashboardView'])->name('dashboard');
-            // TODO: why is it here and outside of system?
+            // TODO: why is it here and outside of system scope?
             Route::resource('users', UserController::class)->only('index');
-            Route::post('invitations/{invite}/resend', [UserInvitationController::class, 'resendInvite'])
+            Route::post('invitations/{userInvitation}/resend', [UserInvitationController::class, 'resendInvite'])
                 ->name('invitations.resendInvite');
             Route::resource('invitations', UserInvitationController::class);
             Route::put('users/{user}/change-status', [UserController::class, 'changeUserStatus'])
@@ -60,7 +60,6 @@ Route::middleware(['auth', 'isActiveUser'])->group(function () {
         Route::post('profiles/search', [ProfileController::class, 'search'])->name('profiles.search');
         Route::resource('profiles', ProfileController::class)->except(['create', 'store']);
 
-        // TODO: refactor post to put requests
         Route::post('events/{event}/participate', [EventController::class, 'participate'])
             ->name('events.participate');
         Route::put('events/{event}/cancel-participation/{user?}', [EventController::class, 'cancelParticipation'])
@@ -74,6 +73,6 @@ Route::middleware(['auth', 'isActiveUser'])->group(function () {
             ->name('events.allowParticipation');
         Route::resource('events', EventController::class);
 
-        Route::view('/','page.home')->name('home');
+        Route::get('/', [EventController::class, 'index'])->name('home');
     });
 });

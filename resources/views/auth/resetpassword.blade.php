@@ -12,7 +12,7 @@
             <x-form.input name="password_confirmation" type="password" placeholder="Confirm new password"/>
         </div>
         <div>
-            <button type="submit">Reset</button>
+            <button class="success" type="submit">Reset</button>
         </div>
     </form>
 @endsection

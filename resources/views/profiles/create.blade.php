@@ -12,6 +12,6 @@
         <x-form.input name="phone_number" type="tel" label="Phone number" placeholder="(+371) 12345678"/>
         <h4>Fields below are only visible to company management</h4>
         <x-form.input name="address" type="text" label="Address" placeholder="Main Street 16, Main City"/>
-        <button type="submit">Create profile</button>
+        <button class="success" type="submit">Create profile</button>
     </form>
 @endsection

@@ -3,6 +3,7 @@
 @section('bodyClass', 'user-view-page')
 @section('content')
     <div class="top-bar">
+        {{-- TODO: add link to profile--}}
         <h2>{{ $user->getFullname() }}</h2>
         <button class="alert edit-form">
             <span class="start-editing">Edit {{ auth()->id() == $user->id ? 'my' : 'user' }} data</span>
@@ -29,6 +30,8 @@
             @endif
             @if (sizeof($roleOptions))
                 <x-form.select name="role_id" placeholder="Role" :options="$roleOptions" :selectValue="$user->role_id" :readonly="true"/>
+            @else
+                <x-form.input placeholder="Your role" name="user_role" type="text" :readonly="true" :inputValue="$user->role->name" additional="disabled"/>
             @endif
             <button class="success" type="submit">Submit</button>
         </form>

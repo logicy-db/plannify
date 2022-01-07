@@ -21,7 +21,7 @@
                     <a href="{{ route('events.index') }}">Events</a>
                     <a href="{{ route('users.show', Auth::user()) }}">My account</a>
                     @hasSystemAccess
-                        <a class="system-panel-btn" href="{{ route('system.dashboard') }}">System panel</a>
+                        <a class="system-panel-btn" style="height: 50px" href="{{ route('system.dashboard') }}">System dashboard</a>
                     @endhasSystemAccess
                 @endhasProfile
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">
@@ -96,4 +96,3 @@
 </script>
 </body>
 </html>
-{{-- TODO: create footer --}}

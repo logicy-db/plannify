@@ -57,13 +57,13 @@ class EventController extends Controller
         //
         $request->validate([
             'preview' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'name' => 'required',
-            'description' => 'required',
-            'location' => 'required',
-            'meeting_point' => 'required',
-            'starting_time' => "required|date_format:\"Y-m-d\TH:i\"|after:{$min}|before:{$max}",
+            'name' => 'required|max:255',
+            'description' => 'required|max:500',
+            'location' => 'required|max:255',
+            'meeting_point' => 'required|max:255',
+            'starting_time' => "required|date_format:\"Y-m-d\TH:i\"|after:{$min}|before:{$max}|before:ending_time",
             'ending_time' => "required|date_format:\"Y-m-d\TH:i\"|after:starting_time",
-            'attendees_limit' => 'required|numeric',
+            'attendees_limit' => 'required|numeric|max:500',
         ]);
 
         $event = new Event();
@@ -120,13 +120,12 @@ class EventController extends Controller
 
         $request->validate([
             'preview' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'name' => 'required',
-            'description' => 'required',
-            'location' => 'required',
-            'meeting_point' => 'required',
+            'name' => 'required|max:255',
+            'description' => 'required|max:500',
+            'location' => 'required|max:255',
+            'meeting_point' => 'required|max:255',
             'starting_time' => "required|date_format:\"Y-m-d\TH:i\"|after:{$min}|before:{$max}",
             'ending_time' => "required|date_format:\"Y-m-d\TH:i\"|after:starting_time",
-            'attendees_limit' => 'required|numeric',
         ]);
 
         $event->name = $request->name;
@@ -135,7 +134,6 @@ class EventController extends Controller
         $event->location = $request->location;
         $event->starting_time = date('Y-m-d H:i:s', strtotime($request->starting_time));
         $event->ending_time = date('Y-m-d H:i:s', strtotime($request->ending_time));
-        $event->attendees_limit = $request->attendees_limit;
 
         if ($request->file('preview')) {
             $storage = Storage::disk('public');
@@ -151,7 +149,7 @@ class EventController extends Controller
 
         return redirect()
             ->route('events.show', $event)
-            ->with('success', 'Event has been updated');
+            ->with('success', 'Event has been updated.');
     }
 
     /**
@@ -163,8 +161,13 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         $event->delete();
+        $storage = Storage::disk('public');
 
-        return redirect()->route('events.index')->with('success', 'Event was deleted');
+        if ($storage->exists($event->preview)) {
+            $storage->delete($event->preview);
+        }
+
+        return redirect()->route('events.index')->with('success', 'Event was successfully deleted.');
     }
 
     /**
@@ -188,18 +191,17 @@ class EventController extends Controller
             $this->authorize('cancelParticipation', $event);
 
             $user = $event->usersGoing()->firstWhere('id', Auth::id());
-            $msg = 'You have canceled your participation in the event';
+            $msg = 'You have canceled your participation in the event.';
         } else {
             $this->authorize('cancelUserParticipation', [$event, $user]);
 
             $user = $event->usersGoing()->firstWhere('id', $user->id);
-            $msg = "You have canceled {$user->getFullname()} participation in the event";
+            $msg = "You have canceled user participation in the event.";
         }
 
         $user->pivot->participation_type_id = Event::USER_CANCELED;
         $user->pivot->save();
 
-        // TODO: inform user by email
         // After user cancels their participation, sign in for the event first user from event queue
         if ($queuedUser = $event->usersQueued()->first()) {
             $queuedUser->pivot->participation_type_id = Event::USER_GOING;
@@ -234,8 +236,8 @@ class EventController extends Controller
         } else {
             $this->authorize('cancelUserQueue', [$event, $user]);
 
-            $event->users()->detach($user->id());
-            $msg = "You have removed {$user->getFullname()} from the event queue.";
+            $event->users()->detach($user->id);
+            $msg = "You have removed user from the event queue.";
         }
 
         return back()->with('success', $msg);
@@ -248,18 +250,23 @@ class EventController extends Controller
         $this->authorize('allowParticipation', [$event, $user]);
         $event->users()->detach($user->id);
 
-        return back()->with('success', "You have allowed {$user->getFullname()} to participate in the event");
+        return back()->with('success', "You have allowed user to participate in the event.");
     }
 
     /*
-     * Search profiles by specified parameters.
+     * Search planned events by name.
      */
     public function search(Request $request) {
-        $this->authorize('restore');
-//        $first_name = $request->first_name;
-//        $profiles = Profile::where('first_name', 'like', "%$first_name%")
-//            ->get();
-        // TODO: these are not profiles!
-        return view('profiles.search', ['profiles' =>[]]);
+        $this->authorize('viewAny', Auth::user());
+
+        $request->validate([
+            'event_name' => 'max:50',
+        ]);
+
+        $events = Event::where('name', 'like', "%$request->event_name%")
+            ->where('starting_time', '>', now())->get()
+            ->sortBy('starting_time');
+
+        return view('events.search', ['events' => $events]);
     }
 }

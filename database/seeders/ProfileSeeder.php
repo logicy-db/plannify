@@ -23,6 +23,7 @@ class ProfileSeeder extends Seeder
                 'user_id' => $user->id,
                 'first_name' => $faker->firstName(),
                 'last_name' => $faker->lastName(),
+                'avatar' => Profile::DEFAULT_IMAGE,
                 'phone_number' => $faker->phoneNumber(),
                 'address' => $faker->streetAddress(),
             ]);

@@ -17,7 +17,7 @@ class CreateUserInvitationsTable extends Migration
         Schema::create('user_invitations', function (Blueprint $table) {
             $table->id();
             $table->string('email')->unique();
-            $table->string('invitation_token', 32)->unique()->nullable();
+            $table->string('invitation_token', 32)->unique();
             $table->foreignId('invited_by');
             $table->foreignId('role_id')->constrained()->cascadeOnDelete();
             $table->smallInteger('status')->default(UserInvitation::PENDING);
@@ -26,8 +26,6 @@ class CreateUserInvitationsTable extends Migration
 
             $table->foreign('invited_by')->references('id')->on('users')->onDelete('cascade');
         });
-
-        // TODO: add codeficator table
     }
 
     /**

@@ -59,6 +59,7 @@
                             @endif
                         </td>
                     </tr>
+                @if($event->isPlanned())
                     <tr class="action-row">
                         <td colspan="2">
                             <b>Actions</b><br/>
@@ -89,7 +90,7 @@
                                         </form>
                                     @else
                                         <form id="form" action="{{ route('events.cancelQueue', $event) }}" method="POST">
-                                            @method('DELETE')
+                                            @method('PUT')
                                             @csrf
                                             <button class="btn danger">Exit queue</button>
                                         </form>
@@ -98,9 +99,9 @@
                             @endif
                         </td>
                     </tr>
+                    @endif
                 </table>
                 @if (sizeof($goingUsers))
-                    {{-- TODO: add toggler--}}
                     <div><b>Participants</b></div>
                     <table class="event-table">
                         @foreach($goingUsers as $index => $participant)

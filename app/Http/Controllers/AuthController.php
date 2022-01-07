@@ -81,9 +81,10 @@ class AuthController extends Controller
                 'required',
                 Rule::exists('user_invitations', 'email')
                     ->where('invitation_token', $request->invitation_token),
-                'unique:users'
+                'unique:users',
+                'max:255'
             ],
-            'password' => 'required|confirmed|min:8|max:20',
+            'password' => 'required|confirmed|min:8',
         ],
         [
             'invitation_token.exists' => 'Invalid invitation token. Please check the URL.',
@@ -105,14 +106,9 @@ class AuthController extends Controller
 
         $invitation->status = UserInvitation::ACCEPTED;
         $invitation->save();
-        $result = $user->save();
+        $user->save();
 
-        // Redirect user to login page after successful registration
-        if ($result) {
-            return redirect()->route('login')->with('success', 'You have successfully registrated.');
-        } else {
-            return back()->with('fail', 'Registration failed, please, try again.');
-        }
+        return redirect()->route('login')->with('success', 'You have successfully registered.');
     }
 
     /**
@@ -128,7 +124,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials, true)){
-            return redirect()->route('home')->with('success', 'Successful login');
+            return redirect()->route('home')->with('success', 'Successful log in');
         }
 
         // Displaying user fields that failed validation.
@@ -170,17 +166,18 @@ class AuthController extends Controller
      */
     public function sendPasswordResetEmail(Request $request) {
         $request->validate([
-            'email' => 'required|email|exists:users',
+            'email' => 'required|email|exists:users|max:255',
+        ],[
+            'email.exists' => 'Provided email is not present in our records.'
         ]);
 
         $status = Password::sendResetLink(
             $request->only('email')
         );
 
-        // TODO: Rework/add normal error handling accross project
         return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __($status)])
-            : back()->withErrors(['status' => __($status)]);
+            ? back()->with('success', 'The password reset link has been send to the provided e-mail.')
+            : back()->with('error', 'An error occurred while processing your request. Please, try again later.');
     }
 
     /**
@@ -188,10 +185,13 @@ class AuthController extends Controller
      */
     public function resetUserPassword(Request $request) {
         $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:8|max:20',
+            'email' => 'required|email|max:255',
+            'password' => 'required|confirmed|min:8|max:255',
         ]);
+
+        if ($request->token === '') {
+            return back()->with('error', 'The token field is required.');
+        }
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
@@ -207,7 +207,7 @@ class AuthController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))
-            : back()->withErrors(['email' => [__($status)]]);
+            ? redirect()->route('login')->with('success', __($status))
+            : back()->with('error', __($status));
     }
 }

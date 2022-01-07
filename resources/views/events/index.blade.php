@@ -14,31 +14,30 @@
     <div class="search-bar">
         <form class="form event-search">
             @csrf
-            <input id="event-name" name="event-name" type="text" placeholder="Search by event name" />
+            <input name="event_name" maxlength="50" type="text" placeholder="Search by event name"/>
         </form>
     </div>
-    <div class="event-card-wrapper card-wrapper">
+    <div class="event-card-wrapper card-wrapper planned-events">
         @include('events.search', ['events' => $plannedEvents])
     </div>
     <h2>Past events</h2>
-    {{-- TODO: remove   --}}
-{{--    <div class="search-bar">--}}
-{{--        @csrf--}}
-{{--        <input class="search search-firstname" type="text" placeholder="Search by first name..." />--}}
-{{--    </div>--}}
     <div class="event-card-wrapper card-wrapper">
         @include('events.search', ['events' => $pastEvents])
     </div>
     <script>
         $(document).ready(function () {
-            $('input#event-name').change(function () {
+            // Search for planned events
+            $("input[name='event_name']").on('input', function () {
                 $.ajax({
                     url: '{{ route('events.search') }}',
                     method: 'POST',
-                    data: {first_name: $(this).val(), _token:$("input[name='_token']").val()},
+                    data: {
+                        event_name: $(this).val(),
+                        _token:$("input[name='_token']").val(),
+                    },
                     success: function (data) {
-                        $('.event-card-wrapper').fadeOut(500, function () {
-                            $('.event-card-wrapper').html(data).fadeIn();
+                        $('.event-card-wrapper.planned-events').fadeOut(500, function () {
+                            $(this).html(data).fadeIn();
                         });
                     }
                 });

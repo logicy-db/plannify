@@ -3,20 +3,17 @@
 <div class="select-wrapper">
     <select id="{{ $name }}" name="{{ $name }}">
         {{-- TODO: Refactor --}}
-        @foreach($options as $value => $name)
-            {{-- TODO: remove the code below--}}
-            {{ $value }}
-            {{ $selectValue }}
-            @if ($value === $selectValue)
-                <option value="{{ $value }}" selected>{{ $name }}</option>
+        @foreach($options as $key => $value)
+            @if ($key === $selectValue)
+                <option value="{{ $key }}" selected>{{ $value }}</option>
             @else
-                <option value="{{ $value }}" {{ $readonly ? 'hidden' : '' }}>{{ $name }}</option>
+                <option value="{{ $key }}" {{ $readonly ? 'hidden' : '' }}>{{ $value }}</option>
             @endif
         @endforeach
     </select>
     <i class="fas fa-caret-down"></i>
 </div>
 @error($name)
-<span class="validation-error">{{ $message }}</span>
+    <span class="validation-error">{{ $message }}</span>
 @enderror
 

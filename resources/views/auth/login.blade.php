@@ -8,6 +8,7 @@
         <x-form.input name="email" type="email" placeholder="Email address"/>
         <x-form.input name="password" type="password" placeholder="Password"/>
         <button class="success" type="submit">Log in</button>
+        <button type="button"><a href="{{ route('password.request') }}">Want to reset password?</a></button>
     </form>
     <br/>
 @endsection

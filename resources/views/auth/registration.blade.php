@@ -10,6 +10,6 @@
         <x-form.input name="email" type="email" placeholder="Email address" :inputValue="$email" :readonly="true"/>
         <x-form.input name="password" type="password" placeholder="Password"/>
         <x-form.input name="password_confirmation" type="password" placeholder="Confirm password"/>
-        <button type="submit">Register</button>
+        <button class="success" type="submit">Register</button>
     </form>
 @endsection

@@ -42,7 +42,7 @@ class UserInvitationController extends Controller
 
         if (Auth::user()->role_id === Role::ADMIN) {
             $allowedRoles = Role::all();
-        } else {
+        } elseif (Auth::user()->role_id === Role::HUMAN_RESOURCES) {
             $allowedRoles = Role::whereNotIn('id', [Role::HUMAN_RESOURCES, Role::ADMIN]);
         }
 
@@ -62,7 +62,7 @@ class UserInvitationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|unique:users,email|unique:user_invitations,email',
+            'email' => 'required|email|max:255|unique:users,email|unique:user_invitations,email',
             'role_id' => ['required', 'exists:roles,id',
                 Auth::user()->role_id === Role::ADMIN ? '' : Rule::notIn([Role::HUMAN_RESOURCES, Role::ADMIN])
             ]
@@ -91,7 +91,7 @@ class UserInvitationController extends Controller
 
         $userInvitation->expires_at = date(
             'Y-m-d H:i:s',
-            strtotime('+24 hours', strtotime($userInvitation->expires_at))
+            strtotime('+24 hours', strtotime(now()))
         );
         $userInvitation->status = UserInvitation::PENDING;
         $userInvitation->save();

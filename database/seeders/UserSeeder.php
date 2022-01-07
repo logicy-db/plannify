@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
             User::create([
                 'email' => $faker->email(),
                 'password' => Hash::make('Option123'),
-                'role_id' => rand(Role::DEVELOPER, Role::ADMIN),
+                'role_id' => rand(Role::WORKER, Role::ADMIN),
             ]);
             --$iterations;
         }

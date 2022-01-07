@@ -36,12 +36,14 @@
                             <button class="status {{ $invite->getStatusCssClass() }}">{{ $invite->getStatus() }}</button>
                         </td>
                         <td class="date">{{ $invite->expires_at }}</td>
+                        @can('update', $invite)
                         <td>
                             <form class="resend-invite" action="{{ route('system.invitations.resendInvite', $invite) }}" method="POST">
                                 @csrf
                                 <button class="danger">Resend invite</button><br/>
                             </form>
                         </td>
+                        @endcan
                     </tr>
                 @endforeach
             </table>

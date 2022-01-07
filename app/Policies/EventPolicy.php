@@ -43,7 +43,7 @@ class EventPolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]);
+        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::ADMIN]);
     }
 
     /**
@@ -55,8 +55,8 @@ class EventPolicy
      */
     public function update(User $user, Event $event)
     {
-        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]) &&
-            !is_null($event);
+        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::ADMIN]) &&
+            $event->exists;
     }
 
     /**
@@ -68,12 +68,13 @@ class EventPolicy
      */
     public function delete(User $user, Event $event)
     {
-        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]) &&
-            !is_null($event);
+        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::ADMIN]) &&
+            $event->exists;
     }
 
     public function participate(User $user, Event $event) {
-        return !$event->users->contains($user->id) && !$event->isFull();
+        return !$event->users->contains($user->id) &&
+            !$event->isFull();
     }
 
     /**
@@ -84,12 +85,12 @@ class EventPolicy
      * @return bool
      */
     public function cancelParticipation(User $user, Event $event) {
-        // TODO: check time before event starts
-        return $event->usersGoing()->contains($user->id);
+        return $event->usersGoing()->contains($user->id) &&
+            $event->isPlanned();
     }
 
     /**
-     * Event organizer, HR or admin cancels other user participation in event.
+     * Event organizer or admin cancels other user participation in event.
      *
      * @param User $user
      * @param Event $event
@@ -97,29 +98,33 @@ class EventPolicy
      * @return bool
      */
     public function cancelUserParticipation(User $user, Event $event, User $model) {
-        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]) &&
-            !is_null($event) &&
+        return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::ADMIN]) &&
+            $event->usersGoing()->contains($model->id) &&
+            $event->exists &&
             $model->exists;
     }
 
     public function queue(User $user, Event $event) {
-        return !$event->usersCanceled()->contains($user->id) &&
-            !$event->usersQueued()->contains($user->id) &&
-            $event->isFull();
+        return !$event->users->contains($user->id) &&
+            $event->isFull() &&
+            $event->isPlanned();
     }
 
     public function cancelQueue(User $user, Event $event) {
-        return $event->usersQueued()->contains($user->id);
+        return $event->usersQueued()->contains($user->id) &&
+            $event->isPlanned();
     }
 
     public function cancelUserQueue(User $user, Event $event, User $model) {
-        return $event->usersQueued()->contains($model) &&
-            in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]);
+        return $model->exists &&
+            $event->exists &&
+            $event->usersQueued()->contains($model->id) &&
+            in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::ADMIN]);
     }
 
     public function allowParticipation(User $user, Event $event, User $model) {
-        return !is_null($event) &&
+        return $event->exists &&
             $event->usersCanceled()->contains($model->id) &&
-            in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::HUMAN_RESOURCES, Role::ADMIN]);
+            in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::ADMIN]);
     }
 }

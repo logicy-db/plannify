@@ -40,10 +40,10 @@ class UserInvitationPolicy
      * @param  \App\Models\UserInvitation  $userInvitation
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, UserInvitation $userInvitation)
+    public function update(User $user, UserInvitation $invite)
     {
-        // TODO: REFACTOR ALL - use exists in every policy
-        return $userInvitation->exists &&
-            in_array($user->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
+        return $invite->exists &&
+            in_array($user->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]) &&
+            $invite->status !== UserInvitation::ACCEPTED;
     }
 }

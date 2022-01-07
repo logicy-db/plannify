@@ -21,7 +21,7 @@ class IsUserActiveMiddleware
         if (!auth()->check() && $request->email) {
             $user = User::whereEmail($request->email)->first();
 
-            if ($user && $user->active === User::STATUS_DISABLED) {
+            if ($user->exists && $user->active === User::STATUS_DISABLED) {
                 return abort(
                     '403',
                     sprintf("Your account was disabled. For more details, contact us using following email: %s", env('MAIL_FROM_ADDRESS'))

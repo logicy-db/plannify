@@ -43,7 +43,7 @@ class ProfilePolicy
      */
     public function create(User $user)
     {
-        return is_null($user->profile) ? Response::allow() : Response::deny('Only one profile per user');
+        return is_null($user->profile) ? Response::allow() : Response::deny('Only one profile per user.');
     }
 
     /**
@@ -55,7 +55,7 @@ class ProfilePolicy
      */
     public function update(User $user, Profile $profile)
     {
-        return $user->id === $profile->id ||
+        return $user->profile->id === $profile->id ||
             in_array($user->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
     }
 }

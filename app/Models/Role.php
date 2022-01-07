@@ -14,19 +14,13 @@ class Role extends Model
     use HasFactory;
 
     // User roles within system
-    public const DEVELOPER = 1;
-    public const MARKETING = 2;
-    public const QUALITY_ASSURANCE = 3;
-    public const PROJECT_MANAGER = 4;
-    public const EVENT_ORGANIZER = 5;
-    public const HUMAN_RESOURCES = 6;
-    public const ADMIN = 7;
+    public const WORKER = 1;
+    public const EVENT_ORGANIZER = 2;
+    public const HUMAN_RESOURCES = 3;
+    public const ADMIN = 4;
 
     public const USER_ROLES = [
-        self::DEVELOPER => 'Developer',
-        self::MARKETING => 'Marketing',
-        self::QUALITY_ASSURANCE => 'Quality assurance',
-        self::PROJECT_MANAGER => 'Project manager',
+        self::WORKER => 'Worker',
         self::EVENT_ORGANIZER => 'Event organizer',
         self::HUMAN_RESOURCES => 'Human resources',
         self::ADMIN => 'Administrator',

@@ -28,7 +28,9 @@ class Kernel extends ConsoleKernel
     {
         // Expire user invitations (if such exist)
         $schedule->call(function () {
-            $expiredInvitations = UserInvitation::where('expires_at', '<', Carbon::now())->get();
+            $expiredInvitations = UserInvitation::where('expires_at', '<', Carbon::now())
+                ->where('status', '!=', UserInvitation::PENDING)
+                ->get();
             /** @var UserInvitation $expiredInvitation */
             foreach($expiredInvitations as $expiredInvitation) {
                 $expiredInvitation->status = UserInvitation::EXPIRED;

@@ -15,7 +15,7 @@ class Event extends Model
     use HasFactory;
 
     public const IMAGE_FOLDER = 'event_previews';
-    public const DEFAULT_IMAGE = self::IMAGE_FOLDER.'/default.jpg';
+    public const DEFAULT_IMAGE = self::IMAGE_FOLDER.'/default.png';
 
     public const USER_GOING = 1;
     public const USER_CANCELED = 2;
@@ -82,5 +82,9 @@ class Event extends Model
         } else {
             return $storage->url(self::DEFAULT_IMAGE);
         }
+    }
+
+    public function isPlanned() {
+        return strtotime($this->starting_time) > strtotime(now());
     }
 }

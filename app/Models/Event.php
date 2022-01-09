@@ -12,20 +12,12 @@ use Illuminate\Support\Facades\Storage;
  */
 class Event extends Model
 {
-    use HasFactory;
-
     public const IMAGE_FOLDER = 'event_previews';
     public const DEFAULT_IMAGE = self::IMAGE_FOLDER.'/default.png';
 
-    public const USER_GOING = 1;
-    public const USER_CANCELED = 2;
-    public const USER_QUEUED = 3;
-
-    public const PARTICIPATION_TYPES = [
-        self::USER_GOING => 'Going',
-        self::USER_CANCELED => 'Canceled',
-        self::USER_QUEUED => 'In queue',
-    ];
+    public const USER_GOING = ParticipationType::USER_GOING;
+    public const USER_CANCELED = ParticipationType::USER_CANCELED;
+    public const USER_QUEUED = ParticipationType::USER_QUEUED;
 
     /**
      * The attributes that are mass assignable.
@@ -36,7 +28,9 @@ class Event extends Model
         'name',
         'description',
         'location',
+        'meeting_point',
         'status',
+        'preview',
         'starting_date',
         'starting_time',
         'attendees_limit',
@@ -53,27 +47,44 @@ class Event extends Model
             ->withPivot(['participation_type_id']);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function usersCanceled() {
-        return $this->users()->wherePivot('participation_type_id', Event::USER_CANCELED)
+        return $this->users()->wherePivot('participation_type_id', self::USER_CANCELED)
             ->orderByPivot('updated_at')->get();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function usersGoing()
     {
-        return $this->users()->wherePivot('participation_type_id', Event::USER_GOING)
+        return $this->users()->wherePivot('participation_type_id', self::USER_GOING)
             ->orderByPivot('updated_at')->get();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function usersQueued()
     {
-        return $this->users()->wherePivot('participation_type_id', Event::USER_QUEUED)
+        return $this->users()->wherePivot('participation_type_id', self::USER_QUEUED)
             ->orderByPivot('updated_at')->get();
     }
 
+    /**
+     * @return bool
+     */
     public function isFull() {
-        return $this->users()->where('participation_type_id', Event::USER_GOING)->count() >= $this->attendees_limit;
+        return $this->users()->where(
+            'participation_type_id', self::USER_GOING
+            )->count() >= $this->attendees_limit;
     }
 
+    /**
+     * @return string
+     */
     public function getPreviewUrl() {
         $storage = Storage::disk('public');
 
@@ -84,6 +95,11 @@ class Event extends Model
         }
     }
 
+    /**
+     * If event is happening in the future.
+     *
+     * @return bool
+     */
     public function isPlanned() {
         return strtotime($this->starting_time) > strtotime(now());
     }

@@ -15,7 +15,7 @@ class ParticipationTypeSeeder extends Seeder
      */
     public function run()
     {
-        foreach (Event::PARTICIPATION_TYPES as $id => $name) {
+        foreach (ParticipationType::PARTICIPATION_TYPES as $id => $name) {
             ParticipationType::create([
                 'id' => $id,
                 'name' => $name,

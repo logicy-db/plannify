@@ -27,7 +27,7 @@ class InviteSent extends Mailable implements ShouldQueue
     public function __construct(UserInvitation $invitation)
     {
         $this->role = Role::USER_ROLES[$invitation->role_id];
-        $this->inviteSender = User::findOrfail($invitation->id)->getFullname();
+        $this->inviteSender = User::findOrfail($invitation->invited_by)->getFullname();
         $this->expirationTime = $invitation->expires_at;
         $this->registrationLink = $invitation->getRegistrationLink();
     }

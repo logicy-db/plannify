@@ -13,7 +13,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
 
     public const STATUS_DISABLED = 0;
     public const STATUS_ACTIVE = 1;
@@ -43,30 +43,14 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    /**
-     * Default attribute values (if not specified).
-     *
-     * @var array
-     */
-    protected $attributes = [];
-
-    /**
-     * Get user role.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function role() {
         return $this->belongsTo(Role::class);
     }
 
     /**
-     * Get profile.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function profile() {
         return $this->hasOne(Profile::class);
@@ -80,15 +64,15 @@ class User extends Authenticatable
     }
 
     /**
-     * Get user full name.
+     * Get user full name. If no profile is set, gets user email
      *
      * @return string
      */
     public function getFullname() {
         if ($this->profile) {
-            return sprintf('%s %s', $this->profile->first_name, $this->profile->last_name);
+            return "{$this->profile->first_name} {$this->profile->last_name}";
         } else {
-            return 'missing';
+            return $this->email;
         }
     }
 
@@ -99,6 +83,9 @@ class User extends Authenticatable
         return in_array($this->role_id, [Role::HUMAN_RESOURCES, Role::ADMIN]);
     }
 
+    /**
+     * @return string
+     */
     public function getProfileUrl() {
         if ($this->profile) {
             return route('profiles.show', $this->profile);

@@ -49,7 +49,7 @@
             </div>
         @endif
     </div>
-    {{--  Page content goes below  --}}
+    {{-- Page content goes below --}}
     @yield('content')
 </div>
 <footer>

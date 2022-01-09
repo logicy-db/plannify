@@ -22,9 +22,9 @@ class UserInvitationController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * User invitation listing view.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -32,9 +32,9 @@ class UserInvitationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Form to create a new user invitation.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -54,7 +54,7 @@ class UserInvitationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Storing of newly created invitation.
      *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -85,6 +85,13 @@ class UserInvitationController extends Controller
             ->with('success', "Invitation to email {$request->email} has been sent.");
     }
 
+    /**
+     * Resend user invitation.
+     *
+     * @param UserInvitation $userInvitation
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function resendInvite(UserInvitation $userInvitation)
     {
         $this->authorize('update', $userInvitation);

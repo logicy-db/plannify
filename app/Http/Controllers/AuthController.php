@@ -113,6 +113,7 @@ class AuthController extends Controller
      * Process log in request.
      *
      * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function loginUser(Request $request)
     {
@@ -151,9 +152,10 @@ class AuthController extends Controller
     }
 
     /**
-     * Reset user password.
+     * Send user password reset link.
      *
      * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function sendPasswordResetEmail(Request $request) {
         $request->validate([
@@ -172,7 +174,10 @@ class AuthController extends Controller
     }
 
     /**
+     * Reset user password.
+     *
      * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function resetUserPassword(Request $request) {
         $request->validate([

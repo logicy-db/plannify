@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\ParticipationType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -20,7 +21,7 @@ class EventController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Event listing view.
      */
     public function index()
     {
@@ -33,9 +34,9 @@ class EventController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new event.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -43,7 +44,7 @@ class EventController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created event.
      *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -54,7 +55,6 @@ class EventController extends Controller
         $min = date('Y-m-d\TH:i');
         $max = date('Y-m-d\TH:i', strtotime('+100 years'));
 
-        //
         $request->validate([
             'preview' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required|max:255',
@@ -84,10 +84,10 @@ class EventController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified event.
      *
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Http\Response
+     * @param Event $event
+     * @return \Illuminate\Contracts\View\View
      */
     public function show(Event $event)
     {
@@ -95,10 +95,10 @@ class EventController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the event.
      *
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Http\Response
+     * @param Event $event
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit(Event $event)
     {
@@ -106,11 +106,11 @@ class EventController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified event.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Event  $event
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Event $event
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Event $event)
     {
@@ -153,7 +153,7 @@ class EventController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified event.
      *
      * @param Event $event
      * @return \Illuminate\Http\RedirectResponse
@@ -172,6 +172,10 @@ class EventController extends Controller
 
     /**
      * Signing user in for the event.
+     *
+     * @param Event $event
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function participate(Event $event) {
         $this->authorize('participate', $event);
@@ -184,7 +188,7 @@ class EventController extends Controller
     }
 
     /**
-     * Signing user in for the event.
+     * Cancels user participation in the event.
      */
     public function cancelParticipation(Event $event, User $user = null) {
         if (is_null($user)) {
@@ -212,7 +216,11 @@ class EventController extends Controller
     }
 
     /**
-     * Signing user in for the event.
+     * Adds user to the event queue.
+     *
+     * @param Event $event
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function queue(Event $event) {
         $this->authorize('queue', $event);
@@ -225,7 +233,12 @@ class EventController extends Controller
     }
 
     /**
-     * Signing user in for the event.
+     * Remove user from the queue.
+     *
+     * @param Event $event
+     * @param User|null $user
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function cancelQueue(Event $event, User $user = null) {
         if (is_null($user)) {
@@ -245,6 +258,11 @@ class EventController extends Controller
 
     /**
      * Allow user to participate when previous participation was canceled.
+     *
+     * @param Event $event
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function allowParticipation(Event $event, User $user) {
         $this->authorize('allowParticipation', [$event, $user]);
@@ -253,8 +271,12 @@ class EventController extends Controller
         return back()->with('success', "You have allowed user to participate in the event.");
     }
 
-    /*
-     * Search planned events by name.
+    /**
+     * Search for planned events by name.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function search(Request $request) {
         $this->authorize('viewAny', Event::class);

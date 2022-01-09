@@ -18,15 +18,16 @@ class CanRegistrateMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        // If link lacks the invitation token, redirect to login
         if (!$request->has('invitation_token')) {
             return redirect('login');
         }
 
-        $invitation_token = $request->get('invitation_token');
+        $invitationToken = $request->get('invitation_token');
 
         try {
             /** @var UserInvitation $invitation */
-            $invitation = UserInvitation::whereInvitationToken($invitation_token)->firstOrFail();
+            $invitation = UserInvitation::whereInvitationToken($invitationToken)->firstOrFail();
         } catch (ModelNotFoundException $e) {
             return redirect('login')->with('error', 'Invalid invitation token. Please check your URL.');
         }

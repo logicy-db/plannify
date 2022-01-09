@@ -77,7 +77,6 @@
                                 If you want to sign-up for the event once more, please contact event manager.
                             @else
                                 @if (!$event->isFull())
-{{--                                    @if--}}
                                     <form id="form" action="{{ route('events.participate', $event) }}" method="POST">
                                         @csrf
                                         <button class="btn success">Participate</button>

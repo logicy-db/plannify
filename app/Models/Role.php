@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Role extends Model
 {
-    use HasFactory;
-
     // User roles within system
     public const WORKER = 1;
     public const EVENT_ORGANIZER = 2;
@@ -32,9 +30,11 @@ class Role extends Model
     protected $fillable = [
         'id',
         'name',
-        'access_level'
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function users() {
         return $this->hasMany(User::class);
     }

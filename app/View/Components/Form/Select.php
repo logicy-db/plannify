@@ -51,7 +51,6 @@ class Select extends Component
         $this->readonly = $readonly ? 'readonly' : '';
     }
 
-
     /**
      * Get the view / contents that represent the component.
      *

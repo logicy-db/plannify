@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 class SystemController extends Controller
 {
     /**
-     * Show admin dashboard view.
+     * Show system dashboard view.
      *
      * @return string
      */

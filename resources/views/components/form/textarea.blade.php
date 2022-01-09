@@ -1,4 +1,4 @@
-{{-- Template for input fields --}}
+{{-- Template for textarea fields --}}
 <label for="{{ $name }}">{{ $label }}</label>
 <textarea id="{{ $name }}" name="{{ $name }}" placeholder="{{ $placeholder }}" {{ $additional }}>{{ $content ?? old($name) }}</textarea>
 @error($name)

@@ -23,9 +23,8 @@ class UserSeeder extends Seeder
             'role_id' => Role::ADMIN,
         ]);
 
-        // TODO: refactor later on
         $faker = Faker::create();
-        $iterations = 20;
+        $iterations = 250;
         while ($iterations > 0) {
             User::create([
                 'email' => $faker->email(),

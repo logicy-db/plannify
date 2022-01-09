@@ -5,7 +5,7 @@
     <form class="form" action="{{ route('profiles.store') }}" enctype="multipart/form-data" method="POST">
         @csrf
         <h2 class="text">Fill in your profile</h2>
-        {{-- TODO: style file selection field --}}
+        <img class="avatar avatar-preview" src="" alt="Avatar preview">
         <x-form.input name="avatar" type="file" placeholder="Profile picture"/>
         <x-form.input name="first_name" type="text" label="First name" placeholder="John"/>
         <x-form.input name="last_name" type="text" label="Last name" placeholder="Doe"/>
@@ -14,4 +14,11 @@
         <x-form.input name="address" type="text" label="Address" placeholder="Main Street 16, Main City"/>
         <button class="success" type="submit">Create profile</button>
     </form>
+    <script>
+        $('#avatar').change(function(){
+            let avatarPreview = $('.avatar-preview');
+            previewImageOnUpload(this, avatarPreview);
+            avatarPreview.show();
+        });
+    </script>
 @endsection

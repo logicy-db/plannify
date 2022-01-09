@@ -19,7 +19,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Profile listing view.
      *
      * @return \Illuminate\Contracts\View\View
      */
@@ -29,7 +29,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new profile.
      */
     public function create()
     {
@@ -37,7 +37,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created profile.
      *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -67,10 +67,10 @@ class ProfileController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified profile.
      *
      * @param Profile $profile
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return \Illuminate\Contracts\View\View
      */
     public function show(Profile $profile)
     {
@@ -78,7 +78,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified profile.
      *
      * @param Request $request
      * @param Profile $profile
@@ -115,7 +115,7 @@ class ProfileController extends Controller
     }
 
     /*
-     * Search profiles by specified parameters.
+     * Search profiles by firstname and lastname.
      */
     public function search(Request $request) {
         $this->authorize('viewAny', Profile::class);

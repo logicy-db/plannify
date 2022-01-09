@@ -3,7 +3,6 @@
 @section('bodyClass', 'user-view-page')
 @section('content')
     <div class="top-bar">
-        {{-- TODO: add link to profile--}}
         <h2>{{ $user->getFullname() }}</h2>
         <button class="alert edit-form">
             <span class="start-editing">Edit {{ auth()->id() == $user->id ? 'my' : 'user' }} data</span>

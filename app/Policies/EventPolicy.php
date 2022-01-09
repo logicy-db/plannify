@@ -72,13 +72,20 @@ class EventPolicy
             $event->exists;
     }
 
+    /**
+     * Determine whether user can participate in the event.
+     *
+     * @param User $user
+     * @param Event $event
+     * @return bool
+     */
     public function participate(User $user, Event $event) {
         return !$event->users->contains($user->id) &&
             !$event->isFull();
     }
 
     /**
-     * User cancels his/her own participation in event.
+     * Determine whether user can cancel his/her participation in the event.
      *
      * @param User $user
      * @param Event $event
@@ -90,7 +97,7 @@ class EventPolicy
     }
 
     /**
-     * Event organizer or admin cancels other user participation in event.
+     * Determine whether user can cancel other user participation in the event.
      *
      * @param User $user
      * @param Event $event
@@ -99,22 +106,44 @@ class EventPolicy
      */
     public function cancelUserParticipation(User $user, Event $event, User $model) {
         return in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::ADMIN]) &&
-            $event->usersGoing()->contains($model->id) &&
             $event->exists &&
-            $model->exists;
+            $model->exists &&
+            $event->usersGoing()->contains($model->id);
     }
 
+    /**
+     * Determine whether user can queue for the event.
+     *
+     * @param User $user
+     * @param Event $event
+     * @return bool
+     */
     public function queue(User $user, Event $event) {
         return !$event->users->contains($user->id) &&
             $event->isFull() &&
             $event->isPlanned();
     }
 
+    /**
+     * Determine whether user can cancel his/her queue in event.
+     *
+     * @param User $user
+     * @param Event $event
+     * @return bool
+     */
     public function cancelQueue(User $user, Event $event) {
         return $event->usersQueued()->contains($user->id) &&
             $event->isPlanned();
     }
 
+    /**
+     * Determine whether user can cancel other user queue in event.
+     *
+     * @param User $user
+     * @param Event $event
+     * @param User $model
+     * @return bool
+     */
     public function cancelUserQueue(User $user, Event $event, User $model) {
         return $model->exists &&
             $event->exists &&
@@ -122,6 +151,14 @@ class EventPolicy
             in_array($user->role_id, [Role::EVENT_ORGANIZER, Role::ADMIN]);
     }
 
+    /**
+     * Determine whether user can allow user participation after blocking in the event.
+     *
+     * @param User $user
+     * @param Event $event
+     * @param User $model
+     * @return bool
+     */
     public function allowParticipation(User $user, Event $event, User $model) {
         return $event->exists &&
             $event->usersCanceled()->contains($model->id) &&

@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Auth;
 
 class UserPolicy
 {
@@ -43,7 +42,6 @@ class UserPolicy
      */
     public function create(?User $user)
     {
-        // TODO: refactor
         return true;
     }
 
@@ -60,6 +58,13 @@ class UserPolicy
             in_array($user->role_id, [Role::ADMIN]);
     }
 
+    /**
+     * Determine whether the user can change user status.
+     *
+     * @param User $user
+     * @param User $model
+     * @return bool
+     */
     public function changeUserStatus(User $user, User $model)
     {
         return $model->exists &&

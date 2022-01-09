@@ -12,11 +12,12 @@ use Illuminate\Support\Facades\Storage;
  */
 class Profile extends Model
 {
-    use HasFactory;
-
     public const DEFAULT_IMAGE = self::IMAGE_FOLDER.'/default.png';
     public const IMAGE_FOLDER = 'user_avatars';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user() {
         return $this->belongsTo(User::class);
     }

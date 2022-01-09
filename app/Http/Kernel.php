@@ -6,7 +6,7 @@ use App\Http\Middleware\CanRegistrateMiddleware;
 use App\Http\Middleware\HasProfileMiddleware;
 use App\Http\Middleware\IsUserActiveMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use App\Http\Middleware\hasSystemAccessMiddleware;
+use App\Http\Middleware\HasSystemAccessMiddleware;
 use \App\Http\Middleware\Authenticate;
 
 class Kernel extends HttpKernel
@@ -68,22 +68,9 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'hasSystemAccess' => hasSystemAccessMiddleware::class,
+        'hasSystemAccess' => HasSystemAccessMiddleware::class,
         'hasProfile' => HasProfileMiddleware::class,
         'canRegistrate' => CanRegistrateMiddleware::class,
         'isActiveUser' => IsUserActiveMiddleware::class,
-    ];
-
-    /**
-     * The priority-sorted list of middleware.
-     *
-     * Forces the listed middleware to always be in the given order.
-     *
-     * @var array
-     */
-    protected $middlewarePriority = [
-        Authenticate::class,
-        hasSystemAccessMiddleware::class,
-        HasProfileMiddleware::class,
     ];
 }

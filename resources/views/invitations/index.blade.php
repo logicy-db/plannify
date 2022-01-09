@@ -10,7 +10,6 @@
     </div>
     @isset($invites)
         <div class="table-wrapper">
-            {{-- TODO: refactor --}}
             <table class="invite-list">
                 <tr>
                     <th>ID</th>
@@ -26,7 +25,6 @@
                         <td>{{ $invite->id }}</td>
                         <td>{{ $invite->email }}</td>
                         <td>{{ $invite->role->name }}</td>
-                        {{-- TODO: see profile if it is created  --}}
                         <td>
                             <button class="profile-link">
                                 <a href="{{ $invite->inviter->getProfileUrl() }}">{{ $invite->inviter->getFullName() }}</a>

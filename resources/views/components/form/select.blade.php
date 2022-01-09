@@ -2,7 +2,6 @@
 <label for="{{ $name }}">{{ $label }}</label>
 <div class="select-wrapper">
     <select id="{{ $name }}" name="{{ $name }}">
-        {{-- TODO: Refactor --}}
         @foreach($options as $key => $value)
             @if ($key === $selectValue)
                 <option value="{{ $key }}" selected>{{ $value }}</option>

@@ -19,11 +19,11 @@ class EventSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-        $iterations = 10;
+        $iterations = 50;
 
         while ($iterations > 0) {
-            $attendeeLimit = rand(5, User::count()-5);
-            $queuedUserCount = rand(1,5);
+            $attendeeLimit = rand(1, User::count());
+            $queuedUserCount = rand(0, User::count()-$attendeeLimit);
             $starting_time = $faker->dateTimeBetween('-5 months', '+5 months')->format('Y-m-d H:i');
             $ending_time = date('Y-m-d H:i', strtotime('+2 hours', strtotime($starting_time)));
             $event = Event::create([

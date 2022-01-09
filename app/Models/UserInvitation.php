@@ -11,8 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserInvitation extends Model
 {
-    use HasFactory;
-
+    // Invitation statuses
     public const PENDING = 1;
     public const ACCEPTED = 2;
     public const EXPIRED = 3;
@@ -30,22 +29,35 @@ class UserInvitation extends Model
     ];
 
     protected $fillable = [
-        'email', 'invitation_token', 'registered_at'
+        'email',
+        'invitation_token'
     ];
 
+    /**
+     * @return string
+     */
     public function getRegistrationLink()
     {
         return urldecode(route('registration') . '?invitation_token=' . $this->invitation_token);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function role() {
         return $this->belongsTo(Role::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function inviter() {
         return $this->belongsTo(User::class, 'invited_by');
     }
 
+    /**
+     * @return string
+     */
     public function getStatus()
     {
         return self::INVITE_STATUS[$this->status];

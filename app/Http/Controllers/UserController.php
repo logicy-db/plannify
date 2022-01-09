@@ -20,7 +20,7 @@ class UserController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * User listing view.
      */
     public function index()
     {
@@ -28,10 +28,10 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified user.
      *
      * @param User $user
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return \Illuminate\Contracts\View\View
      */
     public function show(User $user)
     {
@@ -50,7 +50,7 @@ class UserController extends Controller
     }
 
     /**
-     *
+     * Updates the specified user.
      *
      * @param $id
      * @param Request $request
@@ -90,10 +90,17 @@ class UserController extends Controller
         return back()->with('success', sprintf('Account data were updated'));
     }
 
+    /**
+     * Toggle user status.
+     *
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function changeUserStatus(User $user) {
         $this->authorize('changeUserStatus', $user);
 
-        if ($user->active) {
+        if ($user->active === User::STATUS_ACTIVE) {
             $user->active = User::STATUS_DISABLED;
             $msg = 'User has been disabled.';
         } else {

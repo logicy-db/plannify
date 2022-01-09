@@ -19,9 +19,11 @@ class IsUserActiveMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!auth()->check() && $request->email) {
+            // Avoiding using standard validation, since middleware will remove some messages
+            // returned by AuthController::loginUser
             $user = User::whereEmail($request->email)->first();
 
-            if ($user->exists && $user->active === User::STATUS_DISABLED) {
+            if ($user && $user->active === User::STATUS_DISABLED) {
                 return abort(
                     '403',
                     sprintf("Your account was disabled. For more details, contact us using following email: %s", env('MAIL_FROM_ADDRESS'))

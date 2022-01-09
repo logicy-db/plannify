@@ -257,7 +257,7 @@ class EventController extends Controller
      * Search planned events by name.
      */
     public function search(Request $request) {
-        $this->authorize('viewAny', Auth::user());
+        $this->authorize('viewAny', Event::class);
 
         $request->validate([
             'event_name' => 'max:50',

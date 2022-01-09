@@ -2,7 +2,7 @@
 @section('title', sprintf('Viewing: %s', $profile->user->getFullname()))
 @section('bodyClass', 'profile-view-page')
 @section('content')
-    @can('update', $profile->user)
+    @can('update', $profile)
         <button class="alert">
             <a href="{{ route('users.update', $profile) }}">Edit user profile</a>
         </button>

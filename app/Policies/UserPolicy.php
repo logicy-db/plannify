@@ -32,7 +32,7 @@ class UserPolicy
     public function view(User $user, User $model)
     {
         return $user->id === $model->id ||
-            in_array($user->role_id, [Role::ADMIN]);
+            in_array($user->role_id, [Role::ADMIN, Role::HUMAN_RESOURCES]);
     }
 
     /**

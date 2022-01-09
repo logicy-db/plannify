@@ -20,7 +20,6 @@ use App\Http\Controllers\UserInvitationController;
 */
 
 // Auth routes
-// TODO: Add message handling for all pages to show error and success messages
 Route::middleware(['guest'])->group(function () {
     // Only for guest users
     Route::get('/login', [AuthController::class, 'loginView'])->name('login');
@@ -32,6 +31,10 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/forgot-password', [AuthController::class, 'sendPasswordResetEmail'])->name('password.email');
     Route::get('/reset-password/{token}', [AuthController::class, 'resetPasswordView'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'resetUserPassword'])->name('password.update');
+
+    Route::get('/', function () {
+        return redirect()->route('login');
+    });
 });
 
 Route::middleware(['auth', 'isActiveUser'])->group(function () {
@@ -46,7 +49,6 @@ Route::middleware(['auth', 'isActiveUser'])->group(function () {
         ], function () {
             // System routes
             Route::get('/dashboard', [SystemController::class, 'dashboardView'])->name('dashboard');
-            // TODO: why is it here and outside of system scope?
             Route::resource('users', UserController::class)->only('index');
             Route::post('invitations/{userInvitation}/resend', [UserInvitationController::class, 'resendInvite'])
                 ->name('invitations.resendInvite');
@@ -54,7 +56,7 @@ Route::middleware(['auth', 'isActiveUser'])->group(function () {
             Route::put('users/{user}/change-status', [UserController::class, 'changeUserStatus'])
                 ->name('users.changeStatus');
         });
-        // TODO: move to the system
+
         Route::resource('users', UserController::class);
 
         Route::post('profiles/search', [ProfileController::class, 'search'])->name('profiles.search');
@@ -72,7 +74,9 @@ Route::middleware(['auth', 'isActiveUser'])->group(function () {
         Route::put('events/{event}/allow-participation/{user}', [EventController::class, 'allowParticipation'])
             ->name('events.allowParticipation');
         Route::resource('events', EventController::class);
+    });
 
-        Route::get('/', [EventController::class, 'index'])->name('home');
+    Route::get('/', function () {
+        return redirect()->route('events.index');
     });
 });

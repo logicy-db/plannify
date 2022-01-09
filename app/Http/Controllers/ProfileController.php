@@ -63,7 +63,7 @@ class ProfileController extends Controller
 
         Auth::user()->profile()->save($profile);
 
-        return redirect()->route('home')->with('success', 'You have configured your profile!');
+        return redirect()->route('events.index')->with('success', 'You have configured your profile!');
     }
 
     /**
@@ -118,7 +118,7 @@ class ProfileController extends Controller
      * Search profiles by specified parameters.
      */
     public function search(Request $request) {
-        $this->authorize('viewAny', Auth::user());
+        $this->authorize('viewAny', Profile::class);
 
         $request->validate([
             'first_name' => 'max:50',

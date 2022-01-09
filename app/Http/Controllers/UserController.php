@@ -64,6 +64,8 @@ class UserController extends Controller
                 'email' => sprintf('required|email|max:255|unique:users,email,%s', $user->id),
                 'current_password' => 'required|current_password',
                 'new_password' => 'nullable|confirmed|min:8',
+            ],[
+                'email.unique' => 'User with this email is already registered or has an invite.'
             ]);
 
             if ($request->new_password){
@@ -71,9 +73,12 @@ class UserController extends Controller
             }
             $user->email = $request->email;
         } elseif (Auth::user()->role_id === Role::ADMIN) {
+            // If admin updates other user data
             $request->validate([
-                'email' => sprintf('required|email|unique:users,email,%s', $user->id),
+                'email' => sprintf('required|email|max:255|unique:users,email,%s', $user->id),
                 'role_id' => 'required|exists:roles,id'
+            ],[
+                'email.unique' => 'User with this email is already registered or has an invite.'
             ]);
 
             $user->email = $request->email;

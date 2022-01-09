@@ -28,7 +28,7 @@
                     <x-form.input name="current_password" type="password" placeholder="Current Password"/>
                 </div>
             @endif
-            @if (sizeof($roleOptions))
+            @if (sizeof($roleOptions) && Auth::id() !== $user->id)
                 <x-form.select name="role_id" placeholder="Role" :options="$roleOptions" :selectValue="$user->role_id" :readonly="true"/>
             @else
                 <x-form.input placeholder="Your role" name="user_role" type="text" :readonly="true" :inputValue="$user->role->name" additional="disabled"/>

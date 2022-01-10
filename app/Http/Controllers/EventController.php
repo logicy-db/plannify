@@ -138,7 +138,7 @@ class EventController extends Controller
         if ($request->file('preview')) {
             $storage = Storage::disk('public');
 
-            if ($storage->exists($event->preview)) {
+            if ($storage->exists($event->preview) && $event->preview !== Event::DEFAULT_IMAGE) {
                 $storage->delete($event->preview);
             }
 
@@ -163,7 +163,7 @@ class EventController extends Controller
         $event->delete();
         $storage = Storage::disk('public');
 
-        if ($storage->exists($event->preview)) {
+        if ($storage->exists($event->preview) && $event->preview !== Event::DEFAULT_IMAGE) {
             $storage->delete($event->preview);
         }
 

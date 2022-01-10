@@ -5,7 +5,7 @@ Invitation sender: {{ $inviteSender }}<br/>
 Registration links expires at: {{ $expirationTime }}
 
 @component('mail::button', ['url' => $registrationLink])
-Registrate
+Register
 @endcomponent
 
 Best regards,<br>

@@ -102,7 +102,7 @@ class ProfileController extends Controller
         if ($request->file('avatar')) {
             $storage = Storage::disk('public');
 
-            if ($storage->exists($profile->avatar)) {
+            if ($storage->exists($profile->avatar) && $profile->avatar !== Profile::DEFAULT_IMAGE) {
                 $storage->delete($profile->avatar);
             }
 

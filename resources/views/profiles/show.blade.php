@@ -4,7 +4,7 @@
 @section('content')
     @can('update', $profile)
         <button class="alert">
-            <a href="{{ route('users.update', $profile) }}">Edit user profile</a>
+            <a href="{{ route('users.update', $profile->user) }}">Edit user profile</a>
         </button>
     @endcan
     <div class="profile-card">
